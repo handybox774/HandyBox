@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handy Box - My User Agent</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="sidebar">
+    <ul>
+        <li class="dropdown-item">
+            <a href="#">Converters <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="converter.html">Image Converter</a></li>
+                <li><a href="pdf.html">PDF Merger</a></li>
+                <li><a href="unit-converter.html">Unit Tools</a></li>
+            </ul>
+        </li>
+        
+        <li class="dropdown-item">
+            <a href="#">Generators <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="qrcode.html">QR Code Generator</a></li>
+                <li><a href="password.html">Password Generator</a></li>
+                <li><a href="color-generator.html">Color Generator</a></li>
+            </ul>
+        </li>
+        
+        <li class="dropdown-item">
+            <a href="#">Network <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="ip-address.html">What is my IP?</a></li>
+                <li><a href="user-agent.html">My User Agent</a></li>
+            </ul>
+        </li>
+        
+        <!-- زر Dark Mode في آخر القائمة -->
+        <li id="darkModeToggleMobile" class="dark-mode-mobile">
+            <a href="#" id="darkModeToggleInMenu" class="dark-mode-toggle-menu">
+                <span class="dark-mode-text">Dark Mode</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<header>
+    <div class="header-content">
+        <a href="index.html" class="logo"><h1>Handy Box</h1></a>
+        <button id="darkModeToggle" class="dark-mode-toggle">Dark Mode</button>
+        <div class="hamburger-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </div>
+</header>
+
+<main>
+    <a href="index.html" class="back-button">🔙 Back to Home</a>
+    
+    <h2 class="page-title">📱 My User Agent</h2>
+    <p class="page-description">This tool shows your browser and device information.</p>
+
+    <div class="tool-container">
+        <div class="tool-section">
+            <div class="tool-header">Your User Agent</div>
+            <div class="result-box" id="userAgentResult">
+                Loading...
+            </div>
+            <button class="copy-button" onclick="copyUserAgent()">📋 Copy User Agent</button>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 Handy Box. All rights reserved.</p>
+</footer>
+
+<script src="main-script.js"></script>
+<script src="user-agent.js"></script>
+
+</body>
+</html>

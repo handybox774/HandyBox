@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Handy Box - Converter Tools</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<nav class="sidebar">
+    <ul>
+        <li class="dropdown-item">
+            <a href="#">Converters <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="converter.html">Image Converter</a></li>
+                <li><a href="pdf.html">PDF Merger</a></li>
+                <li><a href="unit-converter.html">Unit Tools</a></li>
+            </ul>
+        </li>
+        
+        <li class="dropdown-item">
+            <a href="#">Generators <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="qrcode.html">QR Code Generator</a></li>
+                <li><a href="password.html">Password Generator</a></li>
+                <li><a href="color-generator.html">Color Generator</a></li>
+            </ul>
+        </li>
+        
+        <li class="dropdown-item">
+            <a href="#">Network <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="ip-address.html">What is my IP?</a></li>
+                <li><a href="user-agent.html">My User Agent</a></li>
+            </ul>
+        </li>
+        
+        <!-- زر Dark Mode في آخر القائمة -->
+        <li id="darkModeToggleMobile" class="dark-mode-mobile">
+            <a href="#" id="darkModeToggleInMenu" class="dark-mode-toggle-menu">
+                <span class="dark-mode-text">Dark Mode</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<header>
+  <div class="header-content">
+    <a href="index.html" class="logo"><h1>Handy Box</h1></a>
+    <button id="darkModeToggle" class="dark-mode-toggle">Dark Mode</button>
+    <div class="hamburger-menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <a href="index.html" class="back-button">🔙 Back to Home</a>
+  <h2>Converter Tools</h2>
+  <p>Explore powerful tools to convert units, timezones, formats, and more.</p>
+
+  <section class="converter-categories">
+    <div class="tool-icons-container">
+       <a href="time-tools.html" style="text-decoration: none; border: none;">
+       <div class="icon-card">
+          <div class="icon-box">
+            <div class="icon-emoji">🕒</div>
+            <div class="icon-label">Time & Date</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="digital-tools.html" style="text-decoration: none; border: none;">
+        <div class="icon-card">
+          <div class="icon-box">
+            <div class="icon-emoji">🔢</div>
+            <div class="icon-label">Digital Formats</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="text-tools.html" style="text-decoration: none; border: none;">
+        <div class="icon-card">
+          <div class="icon-box">
+            <div class="icon-emoji">📝</div>
+            <div class="icon-label">Text Tools</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="unit-tools.html" style="text-decoration: none; border: none;">
+        <div class="icon-card">
+          <div class="icon-box">
+            <div class="icon-emoji">📐</div>
+            <div class="icon-label">Measurement Units</div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>&copy; 2025 Handy Box. All rights reserved.</p>
+</footer>
+<script src="main-script.js"></script>
+<script src="unit-converter.js"></script>
+<script>
+// التحقق من عمل Dark Mode
+console.log("جاري تحميل Dark Mode...");
+document.addEventListener('DOMContentLoaded', function() {
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+    
+    if (darkModeToggle) {
+        console.log("زر Dark Mode موجود");
+        darkModeToggle.addEventListener('click', function() {
+            body.classList.toggle('dark-mode');
+            console.log("تم تبديل الوضع");
+            
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('darkMode', 'enabled');
+                darkModeToggle.textContent = 'Light Mode';
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+                darkModeToggle.textContent = 'Dark Mode';
+            }
+        });
+        
+        // التحقق من الوضع المحفوظ
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            body.classList.add('dark-mode');
+            darkModeToggle.textContent = 'Light Mode';
+        }
+    } else {
+        console.log("زر Dark Mode غير موجود!");
+    }
+});
+</script>
+</body>
+</html>
