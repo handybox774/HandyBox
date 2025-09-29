@@ -2,6 +2,7 @@ const ipAddressDisplay = document.getElementById('ip-address-display');
 const countryDisplay = document.getElementById('country-display');
 const cityDisplay = document.getElementById('city-display');
 const ispDisplay = document.getElementById('isp-display');
+const zipDisplay = document.getElementById('zip-display');
 
 async function getIpAddress() {
     try {
@@ -23,18 +24,21 @@ async function getIpAddress() {
             const locationData = await locationResponse.json();
             
             if (locationData.status === 'success') {
-                countryDisplay.textContent = locationData.country;
-                cityDisplay.textContent = locationData.city;
-                ispDisplay.textContent = locationData.isp;
+                countryDisplay.textContent = locationData.country || 'N/A';
+                cityDisplay.textContent = locationData.city || 'N/A';
+                ispDisplay.textContent = locationData.isp || 'N/A';
+                zipDisplay.textContent = locationData.zip || 'N/A';
             } else {
                 countryDisplay.textContent = 'N/A';
                 cityDisplay.textContent = 'N/A';
                 ispDisplay.textContent = 'N/A';
+                zipDisplay.textContent = 'N/A';
             }
         } catch (locationError) {
             countryDisplay.textContent = 'N/A';
             cityDisplay.textContent = 'N/A';
             ispDisplay.textContent = 'N/A';
+            zipDisplay.textContent = 'N/A';
         }
         
     } catch (error) {
@@ -42,6 +46,7 @@ async function getIpAddress() {
         countryDisplay.textContent = 'N/A';
         cityDisplay.textContent = 'N/A';
         ispDisplay.textContent = 'N/A';
+        zipDisplay.textContent = 'N/A';
         console.error('Error fetching IP:', error);
     }
 }
