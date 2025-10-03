@@ -514,3 +514,41 @@ body.dark-mode .dark-mode-toggle-menu:hover {
         display: none !important;
     }
 }
+
+/* تحسين التصميم على الجوال */
+@media (max-width: 768px) {
+    .tool-icons-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .icon-card {
+        width: 80%;
+        margin: 10px 0;
+    }
+    
+    .sidebar {
+        left: -250px;
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .sidebar.open {
+        left: 0;
+    }
+    
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    .dark-mode-toggle {
+        display: none;
+    }
+    
+    /* زر Dark Mode في قائمة الهامبرغر */
+    #darkModeToggleMobile {
+        border-top: 1px solid #ccc;
+        margin-top: 10px;
+        padding-top: 10px;
+    }
+}
