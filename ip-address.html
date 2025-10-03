@@ -2,11 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Find your public IP address instantly with Handy Box. Free IP lookup with geolocation and device info." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>What is My IP Address - Free IP Lookup | Handy Box</title>
+    <meta name="description" content="Find your public IP address instantly with Handy Box. Free IP lookup with geolocation and device info.">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<header>
+    <div class="header-content">
+        <a href="index.html" class="logo"><h1>Handy Box</h1></a>
+        <button id="darkModeToggle" class="dark-mode-toggle">Dark Mode</button>
+        <div class="hamburger-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </div>
+</header>
+
 <nav class="sidebar">
     <ul>
         <li class="dropdown-item">
@@ -35,7 +49,6 @@
             </ul>
         </li>
         
-        <!-- زر Dark Mode في آخر القائمة -->
         <li id="darkModeToggleMobile" class="dark-mode-mobile">
             <a href="#" id="darkModeToggleInMenu" class="dark-mode-toggle-menu">
                 <span class="dark-mode-text">Dark Mode</span>
@@ -43,37 +56,17 @@
         </li>
     </ul>
 </nav>
-<header>
-    <div class="header-content">
-        <a href="index.html" class="logo"><h1>Handy Box</h1></a>
-        <button id="darkModeToggle" class="dark-mode-toggle">Dark Mode</button>
-        <div class="hamburger-menu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </div>
-    </div>
-</header>
 
 <main>
-    <a href="index.html" class="back-button">🔙 Back to Home</a>
+    <h2>What is my IP?</h2>
+    <p>Your current IP address and location information.</p>
     
-    <h2 class="page-title">🌐 What is my IP?</h2>
-    <p class="page-description">Your current IP address and location information.</p>
-
     <div class="tool-container">
         <div class="tool-section">
             <div class="tool-header">IP Address Information</div>
             <div class="result-box">
-                <div class="result-box">
-    <p><strong>Your IP Address:</strong> <span id="ip-address-display">Loading...</span></p>
-    <p><strong>Country:</strong> <span id="country-display">Loading...</span></p>
-    <p><strong>City:</strong> <span id="city-display">Loading...</span></p>
-    <p><strong>ISP:</strong> <span id="isp-display">Loading...</span></p>
-    <p><strong>ZIP Code:</strong> <span id="zip-display">Loading...</span></p>
-</div>
+                <p><strong>Your IP Address:</strong> <span id="ip-address-display">Loading...</span></p>
             </div>
-            <button class="copy-button" onclick="copyIP()">📋 Copy IP Address</button>
         </div>
     </div>
 </main>
