@@ -1,30 +1,16 @@
 const ipAddressDisplay = document.getElementById('ip-address-display');
-const countryDisplay = document.getElementById('country-display');
-const cityDisplay = document.getElementById('city-display');
-const ispDisplay = document.getElementById('isp-display');
-const zipDisplay = document.getElementById('zip-display');
 
 async function getIpAddress() {
     try {
-        const response = await fetch('/api/ip');
+        const response = await fetch('https://api.ipify.org?format=json');
         if (!response.ok) {
-            throw new Error('Failed to fetch IP data');
+            throw new Error('Failed to fetch IP');
         }
         const data = await response.json();
-        
-        ipAddressDisplay.textContent = data.ip || 'N/A';
-        countryDisplay.textContent = data.country || 'N/A';
-        cityDisplay.textContent = data.city || 'N/A';
-        ispDisplay.textContent = 'N/A'; // لا يمكن الحصول على ISP
-        zipDisplay.textContent = 'N/A'; // لا يمكن الحصول على ZIP
-        
+        ipAddressDisplay.textContent = data.ip;
     } catch (error) {
-        console.error('API Error:', error);
+        console.error('IP API Error:', error);
         ipAddressDisplay.textContent = 'Failed to load IP.';
-        countryDisplay.textContent = 'N/A';
-        cityDisplay.textContent = 'N/A';
-        ispDisplay.textContent = 'N/A';
-        zipDisplay.textContent = 'N/A';
     }
 }
 
