@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is My IP Address - Free IP Lookup | Handy Box</title>
+    <meta name="description" content="Find your public IP address instantly with Handy Box. Free IP lookup with geolocation and device info.">
+<script>
+(function(){
+  try {
+    var theme = null;
+    try { theme = localStorage.getItem('darkMode'); } catch(e) { theme = null; }
+    // لو لوكل ستوريج مو متاح، خذي الثيم من البراميتر
+    var qp = new URL(window.location.href).searchParams.get('theme'); // "dark"/"light"/null
+    var isDark = (theme === 'enabled') || (theme === null && qp === 'dark');
+
+    if (isDark) {
+      document.documentElement.classList.add('dark-mode');
+      document.addEventListener('DOMContentLoaded', function () {
+        document.body.classList.add('dark-mode');
+      });
+    }
+  } catch(e){}
+})();
+</script>
+<link rel="stylesheet" href="style.css?v=3">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="header-content">
+        <a href="index.html" class="logo"><h1>Handy Box</h1></a>
+        <button id="darkModeToggle" class="dark-mode-toggle">Dark Mode</button>
+        <div class="hamburger-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </div>
+</header>
+
+<nav class="sidebar">
+    <ul>
+        <li class="dropdown-item">
+            <a href="#">Converters <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="converter.html">Image Converter</a></li>
+                <li><a href="pdf.html">PDF Merger</a></li>
+                <li><a href="converter-tools.html">Converter Tools</a></li>
+            </ul>
+        </li>
+        
+        <li class="dropdown-item">
+            <a href="#">Generators <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="qrcode.html">QR Code Generator</a></li>
+                <li><a href="password.html">Password Generator</a></li>
+                <li><a href="color-generator.html">Color Generator</a></li>
+            </ul>
+        </li>
+        
+        <li class="dropdown-item">
+            <a href="#">Network <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="ip-address.html">What is my IP?</a></li>
+                <li><a href="user-agent.html">My User Agent</a></li>
+            </ul>
+        </li>
+        
+        <li id="darkModeToggleMobile" class="dark-mode-mobile">
+            <a href="#" id="darkModeToggleInMenu" class="dark-mode-toggle-menu">
+                <span class="dark-mode-text">Dark Mode</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<main>
+    <a href="index.html" class="back-button">🔙 Back to Home</a>
+    <h2>What is my IP?</h2>
+    <p>Your current IP address and location information.</p>
+   
+    <button class="convert-button" id="detectBtn">Detect</button>
+
+<div class="tool-section">
+  <div class="result-box" id="ipResult">IP: —</div>
+  <div class="result-box" id="locResult">Location: —</div>
+  <div class="result-box" id="ispResult">ISP: —</div>
+</div>
+
+    <div class="tool-container">
+        <div class="tool-section">
+            <div class="tool-header">IP Address Information</div>
+            <div class="result-box">
+                <p><strong>Your IP Address:</strong> <span id="ip-address-display">Loading...</span></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 Handy Box. All rights reserved.</p>
+</footer>
+
+<script src="main-script.js"></script>
+<script src="ip-address.js"></script>
+
+</body>
+</html>

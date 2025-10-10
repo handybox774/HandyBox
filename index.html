@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handy Box - Free Online Tools for Everyday Tasks</title>
+    <meta name="description" content="Handy Box offers free online tools for conversions, generators, network info, and text formatting. Simple, fast, and mobile-friendly in one place." />
+<script>
+(function(){
+  try {
+    var theme = null;
+    try { theme = localStorage.getItem('darkMode'); } catch(e) { theme = null; }
+    // لو لوكل ستوريج مو متاح، خذي الثيم من البراميتر
+    var qp = new URL(window.location.href).searchParams.get('theme'); // "dark"/"light"/null
+    var isDark = (theme === 'enabled') || (theme === null && qp === 'dark');
+
+    if (isDark) {
+      document.documentElement.classList.add('dark-mode');
+      document.addEventListener('DOMContentLoaded', function () {
+        document.body.classList.add('dark-mode');
+      });
+    }
+  } catch(e){}
+})();
+</script>
+<link rel="stylesheet" href="style.css?v=3">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo"><h1>Handy Box</h1></a>
+            <button id="darkModeToggle" class="dark-mode-toggle">Dark Mode</button>
+            <div class="hamburger-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sidebar">
+        <ul>
+            <li class="dropdown-item">
+                <a href="#">Converters <span class="arrow">▼</span></a>
+                <ul class="dropdown-content">
+                    <li><a href="converter.html">Image Converter</a></li>
+                    <li><a href="pdf.html">PDF Merger</a></li>
+                    <li><a href="converter-tools.html">Converter Tools</a></li>
+                </ul>
+            </li>
+            <li class="dropdown-item">
+                <a href="#">Generators <span class="arrow">▼</span></a>
+                <ul class="dropdown-content">
+                    <li><a href="qrcode.html">QR Code Generator</a></li>
+                    <li><a href="password.html">Password Generator</a></li>
+                    <li><a href="color-generator.html">Color Generator</a></li>
+                </ul>
+            </li>
+            <li class="dropdown-item">
+                <a href="#">Network <span class="arrow">▼</span></a>
+                <ul class="dropdown-content">
+                    <li><a href="ip-address.html">What is my IP?</a></li>
+                      <li><a href="user-agent.html">My User Agent</a></li>
+                </ul>
+            </li>
+        </ul>
+         <!-- زر Dark Mode في آخر القائمة -->
+<li id="darkModeToggleMobile" class="dark-mode-mobile">
+    <a href="#" id="darkModeToggleInMenu" class="dark-mode-toggle-menu">
+        <span class="dark-mode-text">Dark Mode</span>
+    </a>
+</li>
+    </ul>
+</nav>
+    </nav>
+
+    <main>
+        <h2>Handy Box - Your Go-To for Simple Tools</h2>
+        <p>Choose a category to find the perfect tool for your needs.</p>
+        <div class="tool-icons-container">
+            <div class="icon-card">
+                <a href="#">
+                    <div class="icon-box">
+                        <span class="icon-emoji">🔄</span>
+                        <h3>Converters</h3>
+                    </div>
+                </a>
+                <div class="icon-dropdown">
+                    <a href="converter.html">Image Converter</a>
+                    <a href="pdf.html">PDF Merger</a>
+                    <a href="converter-tools.html">Converter Tools</a>
+                </div>
+            </div>
+
+            <div class="icon-card">
+                <a href="#">
+                    <div class="icon-box">
+                        <span class="icon-emoji">✨</span>
+                        <h3>Generators</h3>
+                    </div>
+                </a>
+                <div class="icon-dropdown">
+                    <a href="qrcode.html">QR Code Generator</a>
+                    <a href="password.html">Password Generator</a>
+                    <a href="color-generator.html">Color Generator</a>
+                </div>
+            </div>
+
+            <div class="icon-card">
+                <a href="#">
+                    <div class="icon-box">
+                        <span class="icon-emoji">🌐</span>
+                        <h3>Network</h3>
+                    </div>
+                </a>
+                <div class="icon-dropdown">
+                    <a href="ip-address.html">What is my IP?</a>
+                    <a href="user-agent.html">My User Agent</a>
+                </div>
+             
+  
+           
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Handy Box. All rights reserved.</p>
+    </footer>
+
+    <script src="main-script.js"></script>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Convert between digital formats: JSON, XML, Base64, and Binary online. Free format converter with Handy Box." />
+  <title>Format Converter - JSON, XML, Base64, Binary | Handy Box</title>
+<script>
+(function(){
+  try {
+    var theme = null;
+    try { theme = localStorage.getItem('darkMode'); } catch(e) { theme = null; }
+    // لو لوكل ستوريج مو متاح، خذي الثيم من البراميتر
+    var qp = new URL(window.location.href).searchParams.get('theme'); // "dark"/"light"/null
+    var isDark = (theme === 'enabled') || (theme === null && qp === 'dark');
+
+    if (isDark) {
+      document.documentElement.classList.add('dark-mode');
+      document.addEventListener('DOMContentLoaded', function () {
+        document.body.classList.add('dark-mode');
+      });
+    }
+  } catch(e){}
+})();
+</script>
+<link rel="stylesheet" href="style.css?v=3">
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .tool-container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .tool-section {
+      margin: 20px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    body.dark-mode .tool-section {
+      background: #2c2c2c;
+      border-color: #444;
+    }
+
+    .tool-header {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    body.dark-mode .tool-header {
+      color: #f4f4f4;
+    }
+
+    .converter-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .format-selector {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: white;
+      color: #333;
+      font-size: 14px;
+      min-width: 150px;
+    }
+
+    body.dark-mode .format-selector {
+      background: #333;
+      color: #f4f4f4;
+      border-color: #555;
+    }
+
+    .convert-button {
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .convert-button:hover {
+      background: #0056b3;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 14px;
+      resize: vertical;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    body.dark-mode textarea {
+      background: #333;
+      color: #f4f4f4;
+      border-color: #555;
+    }
+
+    .copy-button {
+      padding: 8px 12px;
+      font-size: 14px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+
+    .copy-button:hover {
+      background: #545b62;
+    }
+
+    .page-title {
+      text-align: center;
+      margin: 30px 0 10px 0;
+      color: #333;
+    }
+
+    body.dark-mode .page-title {
+      color: #f4f4f4;
+    }
+
+    .page-description {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #666;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    body.dark-mode .page-description {
+      color: #ccc;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin: 20px;
+      padding: 8px 16px;
+      background-color: #eee;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #333;
+    }
+
+    body.dark-mode .back-button {
+      background-color: #444;
+      color: #f4f4f4;
+      border-color: #666;
+    }
+  </style>
+</head>
+
+<body>
+<nav class="sidebar">
+    <ul>
+        <li class="dropdown-item">
+            <a href="#">Converters <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="converter.html">Image Converter</a></li>
+                <li><a href="pdf.html">PDF Merger</a></li>
+                <li><a href="converter-tools.html">Converter Tools</a></li>
+            </ul>
+        </li>
+        
+        <li class="dropdown-item">
+            <a href="#">Generators <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="qrcode.html">QR Code Generator</a></li>
+                <li><a href="password.html">Password Generator</a></li>
+                <li><a href="color-generator.html">Color Generator</a></li>
+            </ul>
+        </li>
+        
+        <li class="dropdown-item">
+            <a href="#">Network <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="ip-address.html">What is my IP?</a></li>
+                <li><a href="user-agent.html">My User Agent</a></li>
+            </ul>
+        </li>
+        
+        <li id="darkModeToggleMobile" class="dark-mode-mobile">
+            <a href="#" id="darkModeToggleInMenu" class="dark-mode-toggle-menu">
+                <span class="dark-mode-text">Dark Mode</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<header>
+  <div class="header-content">
+    <a href="index.html" class="logo"><h1>Handy Box</h1></a>
+    <button id="darkModeToggle" class="dark-mode-toggle">Dark Mode</button>
+    <div class="hamburger-menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <a href="converter-tools.html" class="back-button">🔙 Back to Categories</a>
+  
+  <h2 class="page-title">🔢 Digital Format Tools</h2>
+  <p class="page-description">Convert between JSON, XML, Base64, Binary, and plain text formats.</p>
+
+  <div class="tool-container">
+    <!-- JSON ↔ XML Converter -->
+    <div class="tool-section">
+      <div class="tool-header">🔄 JSON ↔ XML Converter</div>
+      <div class="converter-controls">
+        <select id="jsonXmlFormat" class="format-selector">
+          <option value="jsonToXml">JSON → XML</option>
+          <option value="xmlToJson">XML → JSON</option>
+        </select>
+        <button class="convert-button" onclick="convertJsonXml()">Convert</button>
+      </div>
+      <div class="input-group">
+        <textarea id="jsonXmlInput" placeholder="Enter JSON or XML..."></textarea>
+        <button class="copy-button" onclick="copyOutput('jsonXmlInput')">📋 Copy Input</button>
+      </div>
+      <div class="input-group">
+        <textarea id="jsonXmlOutput" placeholder="Converted result..." readonly></textarea>
+        <button class="copy-button" onclick="copyOutput('jsonXmlOutput')">📋 Copy Output</button>
+      </div>
+    </div>
+
+    <!-- Text ↔ Base64 Converter -->
+    <div class="tool-section">
+      <div class="tool-header">📦 Text ↔ Base64</div>
+      <div class="converter-controls">
+        <select id="base64Format" class="format-selector">
+          <option value="textToBase64">Text → Base64</option>
+          <option value="base64ToText">Base64 → Text</option>
+        </select>
+        <button class="convert-button" onclick="convertBase64()">Convert</button>
+      </div>
+      <div class="input-group">
+        <textarea id="base64Input" placeholder="Enter text or Base64..."></textarea>
+        <button class="copy-button" onclick="copyOutput('base64Input')">📋 Copy Input</button>
+      </div>
+      <div class="input-group">
+        <textarea id="base64Output" placeholder="Converted result..." readonly></textarea>
+        <button class="copy-button" onclick="copyOutput('base64Output')">📋 Copy Output</button>
+      </div>
+    </div>
+
+    <!-- Text ↔ Binary Converter -->
+    <div class="tool-section">
+      <div class="tool-header">💾 Text ↔ Binary</div>
+      <div class="converter-controls">
+        <select id="binaryFormat" class="format-selector">
+          <option value="textToBinary">Text → Binary</option>
+          <option value="binaryToText">Binary → Text</option>
+        </select>
+        <button class="convert-button" onclick="convertBinary()">Convert</button>
+      </div>
+      <div class="input-group">
+        <textarea id="binaryInput" placeholder="Enter text or binary..."></textarea>
+        <button class="copy-button" onclick="copyOutput('binaryInput')">📋 Copy Input</button>
+      </div>
+      <div class="input-group">
+        <textarea id="binaryOutput" placeholder="Converted result..." readonly></textarea>
+        <button class="copy-button" onclick="copyOutput('binaryOutput')">📋 Copy Output</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2025 Handy Box. All rights reserved.</p>
+</footer>
+<script src="main-script.js"></script>
+<script>
+  // JSON ↔ XML Converter
+  function convertJsonXml() {
+    const format = document.getElementById('jsonXmlFormat').value;
+    const input = document.getElementById('jsonXmlInput').value;
+    const output = document.getElementById('jsonXmlOutput');
+    
+    try {
+      if (format === 'jsonToXml') {
+        const obj = JSON.parse(input);
+        let xml = '<root>';
+        for (let key in obj) {
+          xml += `<${key}>${obj[key]}</${key}>`;
+        }
+        xml += '</root>';
+        output.value = xml;
+      } else {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(input, 'text/xml');
+        const obj = {};
+        Array.from(xmlDoc.documentElement.children).forEach(el => {
+          obj[el.tagName] = el.textContent;
+        });
+        output.value = JSON.stringify(obj, null, 2);
+      }
+    } catch (e) {
+      output.value = 'Invalid input format.';
+    }
+  }
+
+  // Text ↔ Base64 Converter
+  function convertBase64() {
+    const format = document.getElementById('base64Format').value;
+    const input = document.getElementById('base64Input').value;
+    const output = document.getElementById('base64Output');
+    
+    try {
+      if (format === 'textToBase64') {
+        output.value = btoa(input);
+      } else {
+        output.value = atob(input);
+      }
+    } catch (e) {
+      output.value = 'Invalid input format.';
+    }
+  }
+
+  // Text ↔ Binary Converter
+  function convertBinary() {
+    const format = document.getElementById('binaryFormat').value;
+    const input = document.getElementById('binaryInput').value;
+    const output = document.getElementById('binaryOutput');
+    
+    try {
+      if (format === 'textToBinary') {
+        output.value = input.split('').map(c => c.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
+      } else {
+        output.value = input.split(' ').map(b => String.fromCharCode(parseInt(b, 2))).join('');
+      }
+    } catch (e) {
+      output.value = 'Invalid input format.';
+    }
+  }
+
+  // Copy function
+  function copyOutput(id) {
+    const output = document.getElementById(id);
+    output.select();
+    document.execCommand('copy');
+  }
+</script>
+
+</body>
+</html>
