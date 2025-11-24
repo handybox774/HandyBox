@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What is My IP Address - Free Lookup | Handy Box</title>
+  <meta name="description" content="Find your public IP address, ISP, and geolocation instantly with Handy Box." />
+
+  <script>
+  (function(){
+    try {
+      var theme = localStorage.getItem('darkMode');
+      var qp = new URL(window.location.href).searchParams.get('theme');
+      var isDark = (theme === 'enabled') || (theme === null && qp === 'dark');
+      if (isDark) {
+        document.documentElement.classList.add('dark-mode');
+        document.addEventListener('DOMContentLoaded', () => document.body.classList.add('dark-mode'));
+      }
+    } catch(e){}
+  })();
+  </script>
+
+  <link rel="preconnect" href="https://flagcdn.com" crossorigin>
+  <link rel="preconnect" href="https://api.ipify.org">
+  <link rel="preconnect" href="https://ipapi.co">
+  <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+  <link rel="stylesheet" href="style.css?v=16">
+
+  <script src="main-script.js?v=16" defer></script>
+  <script src="ip-address.js" defer></script>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="logo"><h1>Handy Box</h1></a>
+      <button id="darkModeToggle" class="dark-mode-toggle">Dark Mode</button>
+      <div class="hamburger-menu">
+        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <ul>
+      <li class="dropdown-item">
+        <a href="#">Converters <span class="arrow">▼</span></a>
+        <ul class="dropdown-content">
+          <li><a href="image-converter.html">Image Converter</a></li>
+          <li><a href="pdf.html">PDF Merger</a></li>
+          <li><a href="unit-converter.html">Unit Tools</a></li>
+        </ul>
+      </li>
+      <li class="dropdown-item">
+        <a href="#">Generators <span class="arrow">▼</span></a>
+        <ul class="dropdown-content">
+          <li><a href="qrcode.html">QR Code Generator</a></li>
+          <li><a href="password.html">Password Generator</a></li>
+          <li><a href="color-generator.html">Color Generator</a></li>
+        </ul>
+      </li>
+      <li class="dropdown-item">
+        <a href="#">Network <span class="arrow">▼</span></a>
+        <ul class="dropdown-content">
+          <li><a href="ip-address.html">What is my IP?</a></li>
+          <li><a href="user-agent.html">My User Agent</a></li>
+        </ul>
+      </li>
+      <li id="darkModeToggleMobile" class="dark-mode-mobile">
+        <a href="#" id="darkModeToggleInMenu" class="dark-mode-toggle-menu">
+          <span class="dark-mode-text">Dark Mode</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main -->
+  <main>
+    <a href="index.html" class="back-button">🔙 Back to Home</a>
+    <h2>What is my IP?</h2>
+    <p>Your current IP address and location information.</p>
+
+    <div class="tool-container">
+      <div class="tool-section">
+        <!-- عنوان بالوسط + مجموعة أزرار على اليمين -->
+        <div class="tool-header-wrap">
+          <div class="tool-header">IP Address Information</div>
+          <div class="header-controls">
+            <button id="showHistoryBtn"   class="history-btn">Show IP History</button>
+            <button id="exportHistoryBtn" class="history-btn hidden">Export</button>
+            <button id="importHistoryBtn" class="history-btn hidden">Import</button>
+            <button id="clearHistoryBtn"  class="history-btn hidden">Clear</button>
+          </div>
+        </div>
+        <small class="history-note">History is stored locally on this browser only.</small>
+
+        <div class="result-box">
+  <p><strong>Your IP Address:</strong> <span id="ip-address-display">Loading...</span></p>
+  <p><strong>Country:</strong> <span id="country-display">Loading...</span></p>
+  <p><strong>City:</strong> <span id="city-display">Loading...</span></p>
+
+  <p style="font-size: 12px; opacity: 0.7; margin-top: 6px;">
+    Note: City detection may be approximate depending on your ISP routing.
+  </p>
+
+  <p><strong>ISP:</strong> <span id="isp-display">Loading...</span></p>
+  <p><strong>ZIP Code:</strong> <span id="zip-display">Loading...</span></p>
+  <p class="zip-note">(ZIP may not be available in some regions)</p>
+</div>
+
+        <!-- history-box ينشئه السكربت تلقائياً إذا غير موجود -->
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Handy Box. All rights reserved.</p>
+  </footer>
+
+ 
+</body>
+</html>
