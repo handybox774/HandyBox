@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Tools – Handy Box Collections</title>
+  <meta name="description" content="Convert between JSON, XML, Base64, Binary, and text formats instantly. Free online digital tools from Handy Box.">
+
+  <!-- Dark Mode Instant Load -->
+  <script>
+  (function(){
+    try {
+      var theme = localStorage.getItem('darkMode');
+      var qp = new URL(window.location.href).searchParams.get('theme');
+      var isDark = (theme === 'enabled') || (theme === null && qp === 'dark');
+      if (isDark) {
+        document.documentElement.classList.add('dark-mode');
+        document.addEventListener('DOMContentLoaded',()=>document.body.classList.add('dark-mode'));
+      }
+    } catch(e){}
+  })();
+  </script>
+
+  <!-- Performance & Assets -->
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+  <link rel="stylesheet" href="style.css?v=16">
+  <script src="main-script.js?v=16" defer></script>
+  <script src="digital-tools.js?v=1" defer></script>
+
+  <style>
+    .tool-container {max-width:800px;margin:30px auto;padding:0 20px}
+    .tool-section {margin:20px 0;padding:20px;border:1px solid #ddd;border-radius:8px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
+    body.dark-mode .tool-section {background:#2c2c2c;border-color:#444}
+    .tool-header {text-align:center;margin-bottom:20px;color:#333;font-weight:bold}
+    body.dark-mode .tool-header {color:#f4f4f4}
+    .converter-controls {display:flex;flex-wrap:wrap;gap:15px;margin-bottom:20px;align-items:center;justify-content:center}
+    .format-selector {padding:10px;border:1px solid #ccc;border-radius:4px;background:white;color:#333;min-width:150px}
+    body.dark-mode .format-selector {background:#333;color:#f4f4f4;border-color:#555}
+    .convert-button {padding:10px 20px;background:#007bff;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:bold;transition:background-color 0.3s}
+    .convert-button:hover {background:#0056b3}
+    textarea {width:100%;height:120px;padding:12px;font-family:monospace;font-size:14px;resize:vertical;border:1px solid #ccc;border-radius:4px;box-sizing:border-box}
+    body.dark-mode textarea {background:#333;color:#f4f4f4;border-color:#555}
+    .copy-button {padding:8px 12px;font-size:14px;background:#6c757d;color:white;border:none;border-radius:4px;cursor:pointer;margin-top:10px;width:100%;transition:background-color 0.3s}
+    .copy-button:hover {background:#545b62}
+    .page-title{text-align:center;margin:30px 0 10px;color:#333}
+    body.dark-mode .page-title{color:#f4f4f4}
+    .page-description{text-align:center;margin-bottom:30px;color:#666;max-width:600px;margin-left:auto;margin-right:auto}
+    body.dark-mode .page-description{color:#ccc}
+    .back-button{display:inline-block;margin:20px;padding:8px 16px;background-color:#eee;border:1px solid #ccc;border-radius:6px;text-decoration:none;font-weight:bold;color:#333}
+    body.dark-mode .back-button{background-color:#444;color:#f4f4f4;border-color:#666}
+  </style>
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <ul>
+      <li class="dropdown-item">
+        <a href="#">Converters <span class="arrow">▼</span></a>
+        <ul class="dropdown-content">
+          <li><a href="image-converter.html">Image Converter</a></li>
+          <li><a href="pdf.html">PDF Merger</a></li>
+          <li><a href="converter-tools.html">Converter Tools</a></li>
+        </ul>
+      </li>
+      <li class="dropdown-item">
+        <a href="#">Generators <span class="arrow">▼</span></a>
+        <ul class="dropdown-content">
+          <li><a href="qrcode.html">QR Code Generator</a></li>
+          <li><a href="password.html">Password Generator</a></li>
+          <li><a href="color-generator.html">Color Generator</a></li>
+        </ul>
+      </li>
+      <li class="dropdown-item">
+        <a href="#">Network <span class="arrow">▼</span></a>
+        <ul class="dropdown-content">
+          <li><a href="ip-address.html">What is my IP?</a></li>
+          <li><a href="user-agent.html">My User Agent</a></li>
+        </ul>
+      </li>
+      <li id="darkModeToggleMobile" class="dark-mode-mobile">
+        <a href="#" id="darkModeToggleInMenu" class="dark-mode-toggle-menu">
+          <span class="dark-mode-text">Dark Mode</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="logo"><h1>Handy Box</h1></a>
+      <button id="darkModeToggle" class="dark-mode-toggle">Dark Mode</button>
+      <div class="hamburger-menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main>
+    <a href="converter-tools.html" class="back-button">🔙 Back to Categories</a>
+    <h2 class="page-title">🔢 Digital Format Tools</h2>
+    <p class="page-description">Convert between JSON, XML, Base64, Binary, and plain text formats.</p>
+
+    <div class="tool-container">
+      <div class="tool-section">
+        <div class="tool-header">🔄 JSON ↔ XML Converter</div>
+        <div class="converter-controls">
+          <select id="jsonXmlFormat" class="format-selector">
+            <option value="jsonToXml">JSON → XML</option>
+            <option value="xmlToJson">XML → JSON</option>
+          </select>
+          <button class="convert-button" onclick="convertJsonXml()">Convert</button>
+        </div>
+        <textarea id="jsonXmlInput" placeholder="Enter JSON or XML..."></textarea>
+        <button class="copy-button" onclick="copyText('jsonXmlInput')">📋 Copy Input</button>
+        <textarea id="jsonXmlOutput" placeholder="Converted result..." readonly></textarea>
+        <button class="copy-button" onclick="copyText('jsonXmlOutput')">📋 Copy Output</button>
+      </div>
+
+      <div class="tool-section">
+        <div class="tool-header">📦 Text ↔ Base64</div>
+        <div class="converter-controls">
+          <select id="base64Format" class="format-selector">
+            <option value="textToBase64">Text → Base64</option>
+            <option value="base64ToText">Base64 → Text</option>
+          </select>
+          <button class="convert-button" onclick="convertBase64()">Convert</button>
+        </div>
+        <textarea id="base64Input" placeholder="Enter text or Base64..."></textarea>
+        <button class="copy-button" onclick="copyText('base64Input')">📋 Copy Input</button>
+        <textarea id="base64Output" placeholder="Converted result..." readonly></textarea>
+        <button class="copy-button" onclick="copyText('base64Output')">📋 Copy Output</button>
+      </div>
+
+    <!-- ===== Binary Suite (unified) ===== -->
+<div class="tool-section">
+  <div class="tool-header">💾 Binary Suite</div>
+
+  <div class="converter-controls" style="gap:10px; align-items:center; justify-content:flex-start;">
+    <select id="binUnifiedMode" class="format-selector">
+      <option value="textToBinary">Text → Binary (UTF-8)</option>
+      <option value="binaryToText">Binary → Text (UTF-8)</option>
+      <option value="decToBin">Decimal → Binary (Float)</option>
+      <option value="binToDec">Binary → Decimal (Float)</option>
+      <option value="intToBin">Integer → Binary (Fixed width)</option>
+      <option value="binToInt">Binary → Integer (Fixed width)</option>
+    </select>
+
+    <!-- Options for Integer → Binary -->
+    <div id="opt-intToBin" style="display:none; gap:8px; align-items:center;">
+      <label for="uIntBits" style="font-weight:600;">Bits:</label>
+      <select id="uIntBits" class="format-selector" style="min-width:90px;">
+        <option>8</option><option>16</option><option>32</option><option>64</option>
+      </select>
+      <label style="display:inline-flex; align-items:center; gap:6px;">
+        <input type="checkbox" id="uIntSigned" checked>
+        Signed (two’s complement)
+      </label>
+    </div>
+
+    <!-- Options for Binary → Integer -->
+    <div id="opt-binToInt" style="display:none; gap:8px; align-items:center;">
+      <label for="btiBits" style="font-weight:600;">Bits:</label>
+      <select id="btiBits" class="format-selector" style="min-width:120px;">
+        <option value="auto">Auto</option>
+        <option>8</option><option>16</option><option>32</option><option>64</option>
+      </select>
+      <label style="display:inline-flex; align-items:center; gap:6px;">
+        <input type="checkbox" id="btiSigned" checked>
+        Signed (two’s complement)
+      </label>
+    </div>
+
+    <button class="convert-button" onclick="convertBinaryUnified()">Convert</button>
+  </div>
+
+  <textarea id="binUnifiedInput" placeholder="Enter input…"></textarea>
+  <button class="copy-button" onclick="copyText('binUnifiedInput')">📋 Copy Input</button>
+
+  <textarea id="binUnifiedOutput" placeholder="Result…" readonly></textarea>
+  <button class="copy-button" onclick="copyText('binUnifiedOutput')">📋 Copy Output</button>
+</div>
+
+<script>
+  (function(){
+    const modeSel    = document.getElementById('binUnifiedMode');
+    const oIntToBin  = document.getElementById('opt-intToBin');
+    const oBinToInt  = document.getElementById('opt-binToInt');
+
+    function refresh(){
+      const m = modeSel.value;
+      oIntToBin.style.display = (m === 'intToBin') ? 'inline-flex' : 'none';
+      oBinToInt.style.display = (m === 'binToInt') ? 'inline-flex' : 'none';
+    }
+    modeSel.addEventListener('change', refresh);
+    refresh();
+  })();
+</script>
+
+
+
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Handy Box. All rights reserved.</p>
+  </footer>
+</body>
+</html>

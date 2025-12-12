@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What is my IP? - IP Lookup Tool | Handy Box</title>
+  <meta name="description" content="Check your public IP address (IPv4 & IPv6), country, city, ISP, and more. IP history is stored only in your browser." />
+
+  <!-- Dark Mode (instant) -->
+  <script>
+  (function () {
+    try {
+      var theme = localStorage.getItem("darkMode");
+      var qp = new URL(window.location.href).searchParams.get("theme");
+      var isDark = theme === "enabled" || (theme === null && qp === "dark");
+      if (isDark) {
+        document.documentElement.classList.add("dark-mode");
+        document.addEventListener("DOMContentLoaded", function () {
+          document.body.classList.add("dark-mode");
+        });
+      }
+    } catch (e) {}
+  })();
+  </script>
+
+  <!-- Perf -->
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+
+  <!-- Global styles -->
+  <link rel="stylesheet" href="style.css?v=16">
+
+  <!-- Leaflet (Map) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+    defer
+  ></script>
+
+  <!-- Page specific styles -->
+  <style>
+    .ip-tool-container{
+      max-width: 840px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .ip-note-small{
+      font-size: 12px;
+      opacity: 0.7;
+      margin-top: 6px;
+    }
+    .result-box p{
+      margin: 4px 0;
+    }
+
+    /* Map section */
+    .map-section{
+      margin-top: 20px;
+      text-align: left;
+    }
+    .map-title{
+      margin: 0 0 8px;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    #ip-map{
+      width: 100%;
+      height: 260px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      margin-bottom: 6px;
+    }
+    .map-note{
+      font-size: 12px;
+      opacity: 0.75;
+      margin: 0;
+    }
+    body.dark-mode #ip-map{
+      box-shadow: 0 2px 6px rgba(0,0,0,0.45);
+    }
+  </style>
+
+  <script src="main-script.js?v=16" defer></script>
+  <script src="ip-address.js?v=4" defer></script>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <ul>
+    <li class="dropdown-item">
+      <a href="#">Converters <span class="arrow">▼</span></a>
+      <ul class="dropdown-content">
+        <li><a href="image-converter.html">Image Converter</a></li>
+        <li><a href="pdf.html">PDF Merger</a></li>
+        <li><a href="converter-tools.html">Converter Tools</a></li>
+      </ul>
+    </li>
+    <li class="dropdown-item">
+      <a href="#">Generators <span class="arrow">▼</span></a>
+      <ul class="dropdown-content">
+        <li><a href="qrcode.html">QR Code Generator</a></li>
+        <li><a href="password.html">Password Generator</a></li>
+        <li><a href="color-generator.html">Color Generator</a></li>
+      </ul>
+    </li>
+    <li class="dropdown-item">
+      <a href="#">Network <span class="arrow">▼</span></a>
+      <ul class="dropdown-content">
+        <li><a href="ip-address.html">What is my IP?</a></li>
+        <li><a href="user-agent.html">My User Agent</a></li>
+      </ul>
+    </li>
+    <li id="darkModeToggleMobile" class="dark-mode-mobile">
+      <a href="#" id="darkModeToggleInMenu" class="dark-mode-toggle-menu">
+        <span class="dark-mode-text">Dark Mode</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<header>
+  <div class="header-content">
+    <a href="index.html" class="logo"><h1>Handy Box</h1></a>
+    <button id="darkModeToggle" class="dark-mode-toggle">Dark Mode</button>
+    <div class="hamburger-menu">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <a href="index.html" class="back-button">🔙 Back to Home</a>
+
+  <h2 class="page-title">What is my IP?</h2>
+  <p class="page-description">
+    See your current public IP address (IPv4 & IPv6), country, city, ISP, and an approximate map location.
+    IP history is stored only in this browser.
+  </p>
+
+  <div class="ip-tool-container">
+    <div class="tool-section">
+      <div class="tool-header-wrap">
+        <h3 class="tool-header">IP Address Information</h3>
+        
+      </div>
+
+      <div class="result-box">
+        <p><strong>IPv4 Address:</strong> <span id="ipv4-display">Loading...</span></p>
+        <p><strong>IPv6 Address:</strong> <span id="ipv6-display">Loading...</span></p>
+        <p><strong>Country:</strong> <span id="country-display">Loading...</span></p>
+        <p><strong>City:</strong> <span id="city-display">Loading...</span></p>
+        <p class="ip-note-small">
+          Note: City detection may be approximate depending on your ISP routing.
+        </p>
+        <p><strong>ISP:</strong> <span id="isp-display">Loading...</span></p>
+        <p><strong>ZIP Code:</strong> <span id="zip-display">Loading...</span></p>
+        <p class="zip-note">(ZIP may not be available in some regions.)</p>
+      </div>
+<div class="history-controls" style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+    <button id="toggleHistoryBtn" class="history-btn">Show IP History</button>
+    <button id="clearHistoryBtn" class="history-btn">Clear</button>
+    <button id="exportHistoryBtn" class="history-btn">Export</button>
+    <button id="importHistoryBtn" class="history-btn">Import</button>
+</div>
+
+      <!-- Map Section -->
+      <div class="map-section">
+        <h3 class="map-title">Approximate location on map</h3>
+        <div id="ip-map"></div>
+        <p class="map-note">
+          Map location is approximate and based on your public IP address.
+        </p>
+      </div>
+
+      <!-- History box -->
+      <div id="historyBox" class="history-box">
+        <strong>Recent IP history (this browser only):</strong>
+        <div id="historyList" style="margin-top:8px; font-size:14px;"></div>
+        <span class="history-note">
+          History is stored locally on your device and is never sent to Handy Box.
+        </span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2025 Handy Box. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

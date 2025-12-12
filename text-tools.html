@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text Tools – Word Counter & Case Converter | Handy Box</title>
+  <meta name="description" content="Free text utilities: word counter, case converter, whitespace cleaner, line tools, and more—simple and fast." />
+
+  <!-- Dark Mode (instant) -->
+  <script>
+  (function(){
+    try{
+      var theme = localStorage.getItem('darkMode');
+      var qp = new URL(window.location.href).searchParams.get('theme');
+      var isDark = (theme === 'enabled') || (theme === null && qp === 'dark');
+      if (isDark){ document.documentElement.classList.add('dark-mode');
+        document.addEventListener('DOMContentLoaded',()=>document.body.classList.add('dark-mode')); }
+    }catch(e){}
+  })();
+  </script>
+
+  <!-- Perf (لو ما عندك سكربت خارجي هنا تقدرِ تشيلي هالسطرين) -->
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+
+  <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+  <link rel="stylesheet" href="style.css?v=16" />
+  <script src="main-script.js?v=16" defer></script>
+  <!-- لو عندك ملف JS خاص بأداة النصوص:
+  <script src="text-tools.js?v=1" defer></script> -->
+    <style>
+        .tool-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 40px auto;
+            max-width: 900px;
+            padding: 0 20px;
+            justify-content: center;
+        }
+
+        .tool-box {
+            flex: 1;
+            min-width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background: white;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        body.dark-mode .tool-box {
+            background: #2c2c2c;
+            border-color: #444;
+        }
+
+        .tool-header {
+            padding: 15px;
+            text-align: center;
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+        }
+
+        body.dark-mode .tool-header {
+            background: #333;
+            color: #f4f4f4;
+            border-bottom-color: #555;
+        }
+
+        .converter-row {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            align-items: flex-start;
+        }
+
+        .input-group, .output-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        body.dark-mode textarea {
+            background: #333;
+            color: #f4f4f4;
+            border-color: #555;
+        }
+
+        .convert-button {
+            padding: 12px 20px;
+            font-size: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+            width: 90%; /* يأخذ كامل العرض */
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .convert-button:hover {
+            background: #0056b3;
+        }
+
+        .copy-button {
+            padding: 8px 12px;
+            font-size: 14px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .copy-button:hover {
+            background: #545b62;
+        }
+
+        .counter-box {
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+
+        body.dark-mode .counter-box {
+            background: #333;
+            color: #f4f4f4;
+            border-color: #555;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin: 20px;
+            padding: 8px 16px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            color: #333;
+        }
+
+        body.dark-mode .back-button {
+            background-color: #444;
+            color: #f4f4f4;
+            border-color: #666;
+        }
+
+        /* العنوان الرئيسي للصفحة */
+        .page-title {
+            text-align: center;
+            margin: 30px 0 10px 0;
+            color: #333;
+        }
+
+        body.dark-mode .page-title {
+            color: #f4f4f4;
+        }
+
+        .page-description {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #666;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        body.dark-mode .page-description {
+            color: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+
+
+<nav class="sidebar">
+    <ul>
+        <li class="dropdown-item">
+            <a href="#">Converters <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="image-converter.html">Image Converter</a></li>
+                <li><a href="pdf.html">PDF Merger</a></li>
+                <li><a href="converter-tools.html">Converter Tools</a></li>
+            </ul>
+        </li>
+        
+        <li class="dropdown-item">
+            <a href="#">Generators <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="qrcode.html">QR Code Generator</a></li>
+                <li><a href="password.html">Password Generator</a></li>
+                <li><a href="color-generator.html">Color Generator</a></li>
+            </ul>
+        </li>
+        
+        <li class="dropdown-item">
+            <a href="#">Network <span class="arrow">▼</span></a>
+            <ul class="dropdown-content">
+                <li><a href="ip-address.html">What is my IP?</a></li>
+                <li><a href="user-agent.html">My User Agent</a></li>
+            </ul>
+        </li>
+        
+        <li id="darkModeToggleMobile" class="dark-mode-mobile">
+            <a href="#" id="darkModeToggleInMenu" class="dark-mode-toggle-menu">
+                <span class="dark-mode-text">Dark Mode</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo"><h1>Handy Box</h1></a>
+            <button id="darkModeToggle" class="dark-mode-toggle">Dark Mode</button>
+            <div class="hamburger-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <a href="converter-tools.html" class="back-button">🔙 Back to Categories</a>
+        
+        <!-- العنوان الرئيسي للصفحة -->
+        <h2 class="page-title">📝 Text Tools</h2>
+        <p class="page-description">Use these tools to transform and analyze your text easily.</p>
+        
+        <div class="tool-container">
+            <!-- Uppercase ↔ Lowercase -->
+            <div class="tool-box">
+                <div class="tool-header">🔤 Uppercase ↔ Lowercase</div>
+                <div class="converter-row">
+                    <div class="input-group">
+                        <textarea id="caseInput" placeholder="Enter text..."></textarea>
+                        <button class="copy-button" onclick="copyOutput('caseInput')">📋 Copy</button>
+                    </div>
+                    
+                    <div class="output-group">
+                        <textarea id="caseOutput" placeholder="Converted result..." readonly></textarea>
+                        <button class="copy-button" onclick="copyOutput('caseOutput')">📋 Copy</button>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: center; margin: 15px 0;">
+                    <button class="convert-button" onclick="convertCase()">🔄 Convert Text</button>
+                </div>
+            </div>
+
+            <!-- Word & Character Counter -->
+            <div class="tool-box">
+                <div class="tool-header">🔢 Word & Character Counter</div>
+                <div class="converter-row">
+                    <div class="input-group">
+                        <textarea id="counterInput" placeholder="Enter text..."></textarea>
+                        <button class="copy-button" onclick="copyOutput('counterInput')">📋 Copy</button>
+                    </div>
+                </div>
+                <div class="counter-box" id="counterResult">Words: 0 | Characters: 0</div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Handy Box. All rights reserved.</p>
+    </footer> 
+    <script>
+        // Uppercase ↔ Lowercase - يعمل مباشرة
+        function convertCase() {
+            const input = document.getElementById('caseInput').value;
+            const output = document.getElementById('caseOutput');
+            // يحول من صغير إلى كبير والعكس تلقائيًا
+            if (input === input.toUpperCase()) {
+                // إذا كان النص كبير بالكامل، نحوله إلى صغير
+                output.value = input.toLowerCase();
+            } else {
+                // إذا كان النص صغير أو مختلط، نحوله إلى كبير
+                output.value = input.toUpperCase();
+            }
+        }
+
+        // Word & Character Counter - يعمل تلقائيًا أثناء الكتابة
+        const counterInput = document.getElementById('counterInput');
+        counterInput.addEventListener('input', () => {
+            const text = counterInput.value.trim();
+            const words = text === '' ? 0 : text.split(/\s+/).length;
+            const chars = text.length;
+            document.getElementById('counterResult').textContent = `Words: ${words} | Characters: ${chars}`;
+        });
+
+        // Copy function
+ 
+async function copyOutput(id) {
+  const el = document.getElementById(id);
+  try {
+    await navigator.clipboard.writeText(el.value);
+    // ممكن تضيفي Toast لاحقًا
+  } catch {
+    // fallback قديم لو احتجتي
+    el.select();
+    document.execCommand('copy');
+  }
+}
+</script>
+
+
+</body>
+
+</html>
