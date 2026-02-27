@@ -12,13 +12,11 @@ function toPort(v) {
 }
 
 export default async function handler(req, res) {
-  // Allow OPTIONS (preflight) safely
   if (req.method === "OPTIONS") {
     res.setHeader("Allow", "POST, OPTIONS");
     return res.status(204).end();
   }
 
-  // POST only
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST, OPTIONS");
     return res.status(405).json({ ok: false, error: "Method not allowed" });
@@ -31,12 +29,10 @@ export default async function handler(req, res) {
     const body = req.body || {};
     const message = (body.message ?? "").toString().trim();
     const email = (body.email ?? "").toString().trim();
-    const name = (body.name ?? "").toString().trim();
     const tool = (body.tool ?? "").toString().trim();
     const page = (body.page ?? "").toString().trim();
     const website = (body.website ?? "").toString().trim(); // honeypot
 
-    // Honeypot: ignore bots silently
     if (website) return res.status(200).json({ ok: true });
 
     if (!message || message.length < 3) {
@@ -46,17 +42,19 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: "Message is too long." });
     }
 
-    const SMTP_HOST = env("SMTP_HOST");
-    const SMTP_PORT = toPort(env("SMTP_PORT"));
-    const SMTP_USER = env("SMTP_USER");
-    const SMTP_PASS = env("SMTP_PASS");
-    const TO_EMAIL = env("TO_EMAIL") || SMTP_USER;
+    const SMTP_HOST = env("SMTP_HOST");           // smtp.sendgrid.net
+    const SMTP_PORT = toPort(env("SMTP_PORT"));   // 587
+    const SMTP_USER = env("SMTP_USER");           // apikey
+    const SMTP_PASS = env("SMTP_PASS");           // SG.xxxxx
+    const TO_EMAIL = env("TO_EMAIL");
+    const FROM_EMAIL = env("FROM_EMAIL");         // must be verified in SendGrid
 
     const missing = [];
     if (!SMTP_HOST) missing.push("SMTP_HOST");
     if (!SMTP_USER) missing.push("SMTP_USER");
     if (!SMTP_PASS) missing.push("SMTP_PASS");
     if (!TO_EMAIL) missing.push("TO_EMAIL");
+    if (!FROM_EMAIL) missing.push("FROM_EMAIL");
 
     if (missing.length) {
       console.error("Missing env vars:", missing);
@@ -72,21 +70,18 @@ export default async function handler(req, res) {
       port: SMTP_PORT,
       secure: SMTP_PORT === 465,
       auth: { user: SMTP_USER, pass: SMTP_PASS },
-
-      // These prevent “stuck sending forever”
-      connectionTimeout: 10_000, // 10s
+      connectionTimeout: 10_000,
       greetingTimeout: 10_000,
-      socketTimeout: 15_000,     // 15s
+      socketTimeout: 15_000,
     });
 
-    // Verify quickly (helps you get a clear error instead of hanging)
     await transporter.verify();
 
     const subject = tool ? `Handy Box Feedback (${tool})` : "Handy Box Feedback";
 
     await transporter.sendMail({
-      // Important: From should be your authenticated SMTP user to avoid rejections
-      from: `Handy Box <${SMTP_USER}>`,
+      // MUST be a verified sender identity in SendGrid
+      from: `Handy Box <${FROM_EMAIL}>`,
       to: TO_EMAIL,
       replyTo: email || undefined,
       subject,
@@ -96,7 +91,6 @@ export default async function handler(req, res) {
         `Message:\n${message}`,
         "",
         `From Email: ${email || "Not provided"}`,
-        `Name: ${name || "Anonymous"}`,
         `Tool: ${tool || "Not provided"}`,
         `Page: ${page || "Not provided"}`,
       ].join("\n"),
@@ -108,7 +102,7 @@ export default async function handler(req, res) {
     return res.status(500).json({
       ok: false,
       error: "Failed to send email.",
-      detail: err?.message ? String(err.message).slice(0, 180) : "Unknown error",
+      detail: err?.message ? String(err.message).slice(0, 250) : "Unknown error",
     });
   }
 }
