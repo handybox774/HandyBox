@@ -1,27 +1,23 @@
 // api/ip.js
 
-function getClientIp(req) {
-  // Vercel / proxies
-  const xff = req.headers["x-forwarded-for"];
-  if (typeof xff === "string" && xff.length) {
-    // can be "ip, ip, ip"
-    return xff.split(",")[0].trim();
-  }
-  const xrip = req.headers["x-real-ip"];
-  if (typeof xrip === "string" && xrip.length) return xrip.trim();
-
-  // Node fallback (sometimes available)
-  return "";
-}
-
 function withTimeout(ms) {
   const controller = new AbortController();
   const t = setTimeout(() => controller.abort(), ms);
   return { signal: controller.signal, clear: () => clearTimeout(t) };
 }
 
+async function safeJson(url, options = {}, timeoutMs = 8000) {
+  const { signal, clear } = withTimeout(timeoutMs);
+  try {
+    const r = await fetch(url, { ...options, signal });
+    const j = await r.json().catch(() => null);
+    return { ok: r.ok, status: r.status, json: j };
+  } finally {
+    clear();
+  }
+}
+
 export default async function handler(req, res) {
-  // Allow OPTIONS safely
   if (req.method === "OPTIONS") return res.status(204).end();
 
   if (req.method !== "GET") {
@@ -30,69 +26,56 @@ export default async function handler(req, res) {
   }
 
   try {
-    const ip = getClientIp(req);
-    const ua = req.headers["user-agent"] || "";
+    // Get IPv4/IPv6 from ipify (server-side, no CORS issues)
+    const [v4, v6] = await Promise.all([
+      safeJson("https://api.ipify.org?format=json", { headers: { accept: "application/json" } }, 8000),
+      safeJson("https://api64.ipify.org?format=json", { headers: { accept: "application/json" } }, 8000),
+    ]);
 
-    // Always return at least IP (even if geo lookup fails)
-    const base = {
-      ok: true,
-      ip: ip || null,
-      userAgent: ua || null,
-    };
+    const ipv4 = v4?.json?.ip || null;
+    const ipv6 = v6?.json?.ip || null;
 
-    // If no IP detected, just return base
-    if (!ip) return res.status(200).json(base);
+    // Use IPv4 for geo if available, otherwise IPv6
+    const geoIp = ipv4 || ipv6;
 
-    // Server-side fetch: no browser CORS problem
-    const fields =
-      "success,ip,type,continent,country,region,city,latitude,longitude,timezone,isp,org,asn";
-    const url = `https://ipwho.is/${encodeURIComponent(ip)}?fields=${fields}`;
+    let geo = null;
+    if (geoIp) {
+      const fields =
+        "success,ip,country,city,region,postal,latitude,longitude,timezone,isp,org,asn";
+      const geoRes = await safeJson(
+        `https://ipwho.is/${encodeURIComponent(geoIp)}?fields=${fields}`,
+        { headers: { accept: "application/json" } },
+        8000
+      );
 
-    const { signal, clear } = withTimeout(8000);
-    let data = null;
-
-    try {
-      const r = await fetch(url, {
-        method: "GET",
-        headers: {
-          "accept": "application/json",
-          "user-agent": "HandyBox/1.0 (Vercel Serverless)",
-        },
-        signal,
-      });
-      data = await r.json().catch(() => null);
-    } finally {
-      clear();
-    }
-
-    if (!data || data.success === false) {
-      // still ok, but no geo
-      return res.status(200).json({
-        ...base,
-        geo: null,
-        note: data?.message || "Geo lookup failed",
-      });
+      if (geoRes?.json && geoRes.json.success !== false) {
+        geo = geoRes.json;
+      } else {
+        geo = { success: false, message: geoRes?.json?.message || "Geo lookup failed" };
+      }
     }
 
     return res.status(200).json({
       ok: true,
-      ip: data.ip || ip,
-      type: data.type || null,
-      country: data.country || null,
-      region: data.region || null,
-      city: data.city || null,
-      latitude: data.latitude ?? null,
-      longitude: data.longitude ?? null,
-      timezone: data.timezone || null,
-      isp: data.isp || null,
-      org: data.org || null,
-      asn: data.asn || null,
-      userAgent: ua || null,
+      ipv4,
+      ipv6,
+      geoIp: geoIp || null,
+      country: geo?.country || null,
+      city: geo?.city || null,
+      region: geo?.region || null,
+      postal: geo?.postal || null,
+      latitude: typeof geo?.latitude === "number" ? geo.latitude : null,
+      longitude: typeof geo?.longitude === "number" ? geo.longitude : null,
+      timezone: geo?.timezone || null,
+      isp: geo?.isp || null,
+      org: geo?.org || null,
+      asn: geo?.asn || null,
+      geoNote: geo?.success === false ? geo.message : null,
     });
   } catch (err) {
     return res.status(500).json({
       ok: false,
-      error: "Failed to detect IP",
+      error: "Failed to load IP info",
       detail: err?.message ? String(err.message).slice(0, 200) : "Unknown error",
     });
   }
