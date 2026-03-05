@@ -3,6 +3,7 @@
 function getClientIp(req) {
   const xff = req.headers["x-forwarded-for"];
   if (typeof xff === "string" && xff.length) {
+    // "client, proxy1, proxy2"
     return xff.split(",")[0].trim();
   }
   const xrip = req.headers["x-real-ip"];
@@ -42,10 +43,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: "Method not allowed" });
   }
 
-  try {
-    // Prevent caching so each user gets their own IP
-    res.setHeader("Cache-Control", "no-store, max-age=0");
+  // Important: ensure per-user correctness (no caching)
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.setHeader("X-Content-Type-Options", "nosniff");
 
+  try {
     const ip = getClientIp(req);
 
     const base = {
@@ -71,18 +74,21 @@ export default async function handler(req, res) {
       });
     }
 
-    // Geo lookup using ipapi.co (server-side, no browser CORS)
+    // Geo lookup by CLIENT IP using ipapi.co
     const geoUrl = `https://ipapi.co/${encodeURIComponent(ip)}/json/`;
     const geoRes = await fetchJson(geoUrl, 8000);
     const g = geoRes.json;
 
-    // ipapi error format: { error: true, reason: "...", ... }
+    // ipapi error format: { error: true, reason: "..." }
     if (!g || g.error) {
       return res.status(200).json({
         ...base,
         geoNote: g?.reason || "Geo lookup failed.",
       });
     }
+
+    const lat = g.latitude != null ? Number(g.latitude) : null;
+    const lon = g.longitude != null ? Number(g.longitude) : null;
 
     return res.status(200).json({
       ok: true,
@@ -91,8 +97,8 @@ export default async function handler(req, res) {
       city: g.city || null,
       region: g.region || null,
       postal: g.postal || null,
-      latitude: g.latitude != null ? Number(g.latitude) : null,
-      longitude: g.longitude != null ? Number(g.longitude) : null,
+      latitude: Number.isFinite(lat) ? lat : null,
+      longitude: Number.isFinite(lon) ? lon : null,
       timezone: g.timezone || null,
       isp: g.org || null,
       org: g.org || null,
