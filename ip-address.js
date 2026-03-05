@@ -165,59 +165,62 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function loadIp() {
-    // show loading
-    set(elIPv4, "Loading...");
-    set(elIPv6, "Loading...");
-    set(elCountry, "Loading...");
-    set(elCity, "Loading...");
-    set(elISP, "Loading...");
-    set(elZIP, "Loading...");
+  set(elIPv4, "Loading...");
+  set(elIPv6, "Loading...");
+  set(elCountry, "Loading...");
+  set(elCity, "Loading...");
+  set(elISP, "Loading...");
+  set(elZIP, "Loading...");
 
-    try {
-      const res = await fetch("/api/ip", { method: "GET" });
-      const data = await res.json().catch(() => ({}));
+  try {
+    const res = await fetch("/api/ip", { method: "GET" });
+    const data = await res.json().catch(() => ({}));
 
-      if (!res.ok || !data.ok) {
-        const msg = data?.error || "Failed to load IP info.";
-        set(elIPv4, msg);
-        set(elIPv6, "—");
-        set(elCountry, "—");
-        set(elCity, "—");
-        set(elISP, "—");
-        set(elZIP, "—");
-        return;
-      }
-
-      set(elIPv4, data.ipv4 || "—");
-      set(elIPv6, data.ipv6 || "—");
-      set(elCountry, data.country || "—");
-      set(elCity, data.city || "—");
-      set(elISP, data.isp || "—");
-      set(elZIP, data.postal || "—");
-
-      // Save to history
-      addToHistory({
-        ts: Date.now(),
-        ipv4: data.ipv4 || null,
-        ipv6: data.ipv6 || null,
-        country: data.country || null,
-        city: data.city || null,
-      });
-
-      // Map (if coordinates available)
-      if (typeof data.latitude === "number" && typeof data.longitude === "number") {
-        ensureMap(data.latitude, data.longitude);
-      }
-    } catch (e) {
-      set(elIPv4, "Network error.");
+    if (!res.ok || !data.ok) {
+      const msg = data?.error || "Failed to load IP info.";
+      set(elIPv4, msg);
       set(elIPv6, "—");
       set(elCountry, "—");
       set(elCity, "—");
       set(elISP, "—");
       set(elZIP, "—");
+      return;
     }
+
+    const ip = data.ip || "";
+    const isV6 = ip.includes(":");
+    const isV4 = ip.includes(".");
+
+    set(elIPv4, isV4 ? ip : "—");
+    set(elIPv6, isV6 ? ip : "—");
+
+    set(elCountry, data.country || "—");
+    set(elCity, data.city || "—");
+    set(elISP, data.isp || "—");
+    set(elZIP, data.postal || "—");
+
+    addToHistory({
+      ts: Date.now(),
+      ipv4: isV4 ? ip : null,
+      ipv6: isV6 ? ip : null,
+      country: data.country || null,
+      city: data.city || null,
+    });
+
+    if (typeof data.latitude === "number" && typeof data.longitude === "number") {
+      ensureMap(data.latitude, data.longitude);
+    }
+  } catch (e) {
+    set(elIPv4, "Network error.");
+    set(elIPv6, "—");
+    set(elCountry, "—");
+    set(elCity, "—");
+    set(elISP, "—");
+    set(elZIP, "—");
   }
+}
 
   initHistoryUI();
   loadIp();
 });
+
