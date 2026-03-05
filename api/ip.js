@@ -1,15 +1,32 @@
 // api/ip.js
 
+function getClientIp(req) {
+  const xff = req.headers["x-forwarded-for"];
+  if (typeof xff === "string" && xff.length) {
+    return xff.split(",")[0].trim();
+  }
+  const xrip = req.headers["x-real-ip"];
+  if (typeof xrip === "string" && xrip.length) return xrip.trim();
+  return "";
+}
+
 function withTimeout(ms) {
   const controller = new AbortController();
   const t = setTimeout(() => controller.abort(), ms);
   return { signal: controller.signal, clear: () => clearTimeout(t) };
 }
 
-async function safeJson(url, options = {}, timeoutMs = 8000) {
+async function fetchJson(url, timeoutMs = 8000) {
   const { signal, clear } = withTimeout(timeoutMs);
   try {
-    const r = await fetch(url, { ...options, signal });
+    const r = await fetch(url, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "user-agent": "HandyBox/1.0 (Vercel Serverless)",
+      },
+      signal,
+    });
     const j = await r.json().catch(() => null);
     return { ok: r.ok, status: r.status, json: j };
   } finally {
@@ -26,51 +43,60 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Get IPv4/IPv6 from ipify (server-side, no CORS issues)
-    const [v4, v6] = await Promise.all([
-      safeJson("https://api.ipify.org?format=json", { headers: { accept: "application/json" } }, 8000),
-      safeJson("https://api64.ipify.org?format=json", { headers: { accept: "application/json" } }, 8000),
-    ]);
+    const ip = getClientIp(req);
 
-    const ipv4 = v4?.json?.ip || null;
-    const ipv6 = v6?.json?.ip || null;
+    const base = {
+      ok: true,
+      ip: ip || null,
+      country: null,
+      city: null,
+      region: null,
+      postal: null,
+      latitude: null,
+      longitude: null,
+      timezone: null,
+      isp: null,
+      org: null,
+      asn: null,
+      geoNote: null,
+    };
 
-    // Use IPv4 for geo if available, otherwise IPv6
-    const geoIp = ipv4 || ipv6;
+    if (!ip) {
+      return res.status(200).json({
+        ...base,
+        geoNote: "Could not detect client IP (missing proxy headers).",
+      });
+    }
 
-    let geo = null;
-    if (geoIp) {
-      const fields =
-        "success,ip,country,city,region,postal,latitude,longitude,timezone,isp,org,asn";
-      const geoRes = await safeJson(
-        `https://ipwho.is/${encodeURIComponent(geoIp)}?fields=${fields}`,
-        { headers: { accept: "application/json" } },
-        8000
-      );
+    // Geo lookup using ipwho.is SERVER-SIDE (no browser CORS)
+    const fields =
+      "success,ip,country,city,region,postal,latitude,longitude,timezone,isp,org,asn,message";
+    const url = `https://ipwho.is/${encodeURIComponent(ip)}?fields=${fields}`;
 
-      if (geoRes?.json && geoRes.json.success !== false) {
-        geo = geoRes.json;
-      } else {
-        geo = { success: false, message: geoRes?.json?.message || "Geo lookup failed" };
-      }
+    const geoRes = await fetchJson(url, 8000);
+    const g = geoRes.json;
+
+    if (!g || g.success === false) {
+      return res.status(200).json({
+        ...base,
+        geoNote: g?.message || "Geo lookup failed.",
+      });
     }
 
     return res.status(200).json({
       ok: true,
-      ipv4,
-      ipv6,
-      geoIp: geoIp || null,
-      country: geo?.country || null,
-      city: geo?.city || null,
-      region: geo?.region || null,
-      postal: geo?.postal || null,
-      latitude: typeof geo?.latitude === "number" ? geo.latitude : null,
-      longitude: typeof geo?.longitude === "number" ? geo.longitude : null,
-      timezone: geo?.timezone || null,
-      isp: geo?.isp || null,
-      org: geo?.org || null,
-      asn: geo?.asn || null,
-      geoNote: geo?.success === false ? geo.message : null,
+      ip: g.ip || ip,
+      country: g.country || null,
+      city: g.city || null,
+      region: g.region || null,
+      postal: g.postal || null,
+      latitude: typeof g.latitude === "number" ? g.latitude : null,
+      longitude: typeof g.longitude === "number" ? g.longitude : null,
+      timezone: g.timezone || null,
+      isp: g.isp || null,
+      org: g.org || null,
+      asn: g.asn || null,
+      geoNote: null,
     });
   } catch (err) {
     return res.status(500).json({
