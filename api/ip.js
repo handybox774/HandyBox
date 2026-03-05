@@ -43,6 +43,9 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Prevent caching so each user gets their own IP
+    res.setHeader("Cache-Control", "no-store, max-age=0");
+
     const ip = getClientIp(req);
 
     const base = {
@@ -68,32 +71,30 @@ export default async function handler(req, res) {
       });
     }
 
-    // Geo lookup using ipwho.is SERVER-SIDE (no browser CORS)
-    const fields =
-      "success,ip,country,city,region,postal,latitude,longitude,timezone,isp,org,asn,message";
-    const url = `https://ipwho.is/${encodeURIComponent(ip)}?fields=${fields}`;
-
-    const geoRes = await fetchJson(url, 8000);
+    // Geo lookup using ipapi.co (server-side, no browser CORS)
+    const geoUrl = `https://ipapi.co/${encodeURIComponent(ip)}/json/`;
+    const geoRes = await fetchJson(geoUrl, 8000);
     const g = geoRes.json;
 
-    if (!g || g.success === false) {
+    // ipapi error format: { error: true, reason: "...", ... }
+    if (!g || g.error) {
       return res.status(200).json({
         ...base,
-        geoNote: g?.message || "Geo lookup failed.",
+        geoNote: g?.reason || "Geo lookup failed.",
       });
     }
 
     return res.status(200).json({
       ok: true,
-      ip: g.ip || ip,
-      country: g.country || null,
+      ip,
+      country: g.country_name || null,
       city: g.city || null,
       region: g.region || null,
       postal: g.postal || null,
-      latitude: typeof g.latitude === "number" ? g.latitude : null,
-      longitude: typeof g.longitude === "number" ? g.longitude : null,
+      latitude: g.latitude != null ? Number(g.latitude) : null,
+      longitude: g.longitude != null ? Number(g.longitude) : null,
       timezone: g.timezone || null,
-      isp: g.isp || null,
+      isp: g.org || null,
       org: g.org || null,
       asn: g.asn || null,
       geoNote: null,
