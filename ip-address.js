@@ -1,7 +1,6 @@
 // ip-address.js
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Elements (match your HTML)
   const elIPv4 = document.getElementById("ipv4-display");
   const elIPv6 = document.getElementById("ipv6-display");
   const elCountry = document.getElementById("country-display");
@@ -43,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function addToHistory(entry) {
     const items = readHistory();
-    // de-dupe by ipv4+ipv6
     const key = `${entry.ipv4 || ""}|${entry.ipv6 || ""}`;
     const filtered = items.filter((x) => `${x.ipv4 || ""}|${x.ipv6 || ""}` !== key);
     filtered.unshift(entry);
@@ -52,7 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderHistory() {
     if (!historyList) return;
+
     const items = readHistory();
+
     if (!items.length) {
       historyList.innerHTML = `<div style="opacity:.7">No history yet.</div>`;
       return;
@@ -62,14 +62,17 @@ document.addEventListener("DOMContentLoaded", () => {
       .map((x) => {
         const when = new Date(x.ts).toLocaleString();
         const v4 = x.ipv4 ? `IPv4: ${x.ipv4}` : `IPv4: —`;
-        const v6 = x.ipv6 ? `IPv6: ${x.ipv6}` : `IPv6: —`;
+        const v6 = x.ipv6 ? `IPv6: ${x.ipv6}` : `IPv6: Not detected`;
         const loc = [x.city, x.country].filter(Boolean).join(", ") || "—";
-        return `<div style="padding:6px 0;border-bottom:1px solid rgba(0,0,0,.08)">
-          <div><strong>${when}</strong></div>
-          <div>${v4}</div>
-          <div>${v6}</div>
-          <div style="opacity:.8">${loc}</div>
-        </div>`;
+
+        return `
+          <div style="padding:6px 0;border-bottom:1px solid rgba(0,0,0,.08)">
+            <div><strong>${when}</strong></div>
+            <div>${v4}</div>
+            <div>${v6}</div>
+            <div style="opacity:.8">${loc}</div>
+          </div>
+        `;
       })
       .join("");
   }
@@ -92,9 +95,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (toggleHistoryBtn) {
       toggleHistoryBtn.addEventListener("click", () => {
         if (!historyBox) return;
+
         const isHidden = historyBox.style.display === "none";
         historyBox.style.display = isHidden ? "block" : "none";
         toggleHistoryBtn.textContent = isHidden ? "Hide IP History" : "Show IP History";
+
         if (isHidden) renderHistory();
       });
     }
@@ -118,25 +123,29 @@ document.addEventListener("DOMContentLoaded", () => {
         const input = document.createElement("input");
         input.type = "file";
         input.accept = "application/json";
+
         input.onchange = async () => {
           const file = input.files && input.files[0];
           if (!file) return;
+
           const text = await file.text();
+
           try {
             const items = JSON.parse(text);
             if (!Array.isArray(items)) throw new Error("Invalid format");
+
             writeHistory(items);
             renderHistory();
           } catch {
             alert("Invalid JSON file.");
           }
         };
+
         input.click();
       });
     }
   }
 
-  // Map (Leaflet)
   let map = null;
   let marker = null;
 
@@ -144,7 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const mapEl = document.getElementById("ip-map");
     if (!mapEl) return;
 
-    // Wait until Leaflet is ready
     if (!window.L) {
       setTimeout(() => ensureMap(lat, lon), 200);
       return;
@@ -154,9 +162,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!map) {
       map = L.map("ip-map", { zoomControl: true }).setView([lat, lon], 10);
+
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap contributors",
       }).addTo(map);
+
       marker = L.marker([lat, lon]).addTo(map);
     } else {
       map.setView([lat, lon], 10);
@@ -165,62 +175,61 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function loadIp() {
-  set(elIPv4, "Loading...");
-  set(elIPv6, "Loading...");
-  set(elCountry, "Loading...");
-  set(elCity, "Loading...");
-  set(elISP, "Loading...");
-  set(elZIP, "Loading...");
+    set(elIPv4, "Loading...");
+    set(elIPv6, "Loading...");
+    set(elCountry, "Loading...");
+    set(elCity, "Loading...");
+    set(elISP, "Loading...");
+    set(elZIP, "Loading...");
 
-  try {
-    const res = await fetch("/api/ip", { method: "GET" });
-    const data = await res.json().catch(() => ({}));
+    try {
+      const res = await fetch("/api/ip", { method: "GET", cache: "no-store" });
+      const data = await res.json().catch(() => ({}));
 
-    if (!res.ok || !data.ok) {
-      const msg = data?.error || "Failed to load IP info.";
-      set(elIPv4, msg);
+      if (!res.ok || !data.ok) {
+        const msg = data?.error || "Failed to load IP info.";
+        set(elIPv4, msg);
+        set(elIPv6, "—");
+        set(elCountry, "—");
+        set(elCity, "—");
+        set(elISP, "—");
+        set(elZIP, "—");
+        return;
+      }
+
+      const ip = data.ip || "";
+      const isV4 = ip.includes(".");
+      const ipv6 = data.ipv6 || "";
+
+      set(elIPv4, isV4 ? ip : "—");
+      set(elIPv6, ipv6 || "Not detected on this network");
+
+      set(elCountry, data.country || "—");
+      set(elCity, data.city || "—");
+      set(elISP, data.isp || "—");
+      set(elZIP, data.postal || "—");
+
+      addToHistory({
+        ts: Date.now(),
+        ipv4: isV4 ? ip : null,
+        ipv6: ipv6 || null,
+        country: data.country || null,
+        city: data.city || null,
+      });
+
+      if (typeof data.latitude === "number" && typeof data.longitude === "number") {
+        ensureMap(data.latitude, data.longitude);
+      }
+    } catch {
+      set(elIPv4, "Network error.");
       set(elIPv6, "—");
       set(elCountry, "—");
       set(elCity, "—");
       set(elISP, "—");
       set(elZIP, "—");
-      return;
     }
-
-    const ip = data.ip || "";
-    const isV6 = ip.includes(":");
-    const isV4 = ip.includes(".");
-
-    set(elIPv4, isV4 ? ip : "—");
-    set(elIPv6, isV6 ? ip : "—");
-
-    set(elCountry, data.country || "—");
-    set(elCity, data.city || "—");
-    set(elISP, data.isp || "—");
-    set(elZIP, data.postal || "—");
-
-    addToHistory({
-      ts: Date.now(),
-      ipv4: isV4 ? ip : null,
-      ipv6: isV6 ? ip : null,
-      country: data.country || null,
-      city: data.city || null,
-    });
-
-    if (typeof data.latitude === "number" && typeof data.longitude === "number") {
-      ensureMap(data.latitude, data.longitude);
-    }
-  } catch (e) {
-    set(elIPv4, "Network error.");
-    set(elIPv6, "—");
-    set(elCountry, "—");
-    set(elCity, "—");
-    set(elISP, "—");
-    set(elZIP, "—");
   }
-}
 
   initHistoryUI();
   loadIp();
 });
-
