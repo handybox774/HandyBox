@@ -3,7 +3,6 @@
 function getClientIp(req) {
   const xff = req.headers["x-forwarded-for"];
   if (typeof xff === "string" && xff.length) {
-    // "client, proxy1, proxy2"
     return xff.split(",")[0].trim();
   }
   const xrip = req.headers["x-real-ip"];
@@ -11,105 +10,76 @@ function getClientIp(req) {
   return "";
 }
 
-function withTimeout(ms) {
-  const controller = new AbortController();
-  const t = setTimeout(() => controller.abort(), ms);
-  return { signal: controller.signal, clear: () => clearTimeout(t) };
-}
-
-async function fetchJson(url, timeoutMs = 8000) {
-  const { signal, clear } = withTimeout(timeoutMs);
+async function fetchJson(url) {
   try {
     const r = await fetch(url, {
-      method: "GET",
       headers: {
         accept: "application/json",
-        "user-agent": "HandyBox/1.0 (Vercel Serverless)",
+        "user-agent": "HandyBox/1.0",
       },
-      signal,
     });
-    const j = await r.json().catch(() => null);
-    return { ok: r.ok, status: r.status, json: j };
-  } finally {
-    clear();
+    return await r.json();
+  } catch {
+    return null;
   }
 }
 
 export default async function handler(req, res) {
-  if (req.method === "OPTIONS") return res.status(204).end();
-
   if (req.method !== "GET") {
-    res.setHeader("Allow", "GET, OPTIONS");
-    return res.status(405).json({ ok: false, error: "Method not allowed" });
+    return res.status(405).json({ ok: false });
   }
 
-  // Important: ensure per-user correctness (no caching)
-  res.setHeader("Cache-Control", "no-store, max-age=0");
-  res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Cache-Control", "no-store");
 
-  try {
-    const ip = getClientIp(req);
+  const ip = getClientIp(req);
 
-    const base = {
+  if (!ip) {
+    return res.status(200).json({
       ok: true,
-      ip: ip || null,
+      ip: null,
       country: null,
       city: null,
       region: null,
       postal: null,
       latitude: null,
       longitude: null,
-      timezone: null,
       isp: null,
-      org: null,
-      asn: null,
-      geoNote: null,
-    };
-
-    if (!ip) {
-      return res.status(200).json({
-        ...base,
-        geoNote: "Could not detect client IP (missing proxy headers).",
-      });
-    }
-
-    // Geo lookup by CLIENT IP using ipapi.co
-    const geoUrl = `https://ipapi.co/${encodeURIComponent(ip)}/json/`;
-    const geoRes = await fetchJson(geoUrl, 8000);
-    const g = geoRes.json;
-
-    // ipapi error format: { error: true, reason: "..." }
-    if (!g || g.error) {
-      return res.status(200).json({
-        ...base,
-        geoNote: g?.reason || "Geo lookup failed.",
-      });
-    }
-
-    const lat = g.latitude != null ? Number(g.latitude) : null;
-    const lon = g.longitude != null ? Number(g.longitude) : null;
-
-    return res.status(200).json({
-      ok: true,
-      ip,
-      country: g.country_name || null,
-      city: g.city || null,
-      region: g.region || null,
-      postal: g.postal || null,
-      latitude: Number.isFinite(lat) ? lat : null,
-      longitude: Number.isFinite(lon) ? lon : null,
-      timezone: g.timezone || null,
-      isp: g.org || null,
-      org: g.org || null,
-      asn: g.asn || null,
-      geoNote: null,
-    });
-  } catch (err) {
-    return res.status(500).json({
-      ok: false,
-      error: "Failed to load IP info",
-      detail: err?.message ? String(err.message).slice(0, 200) : "Unknown error",
     });
   }
+
+  // Provider 1: ipapi
+  let geo = await fetchJson(`https://ipapi.co/${ip}/json/`);
+
+  if (!geo || geo.error) {
+    geo = {};
+  }
+
+  // If data weak, try provider 2
+  if (!geo.city || !geo.country_name) {
+    const alt = await fetchJson(`http://ip-api.com/json/${ip}`);
+
+    if (alt && alt.status === "success") {
+      geo = {
+        country_name: alt.country,
+        city: alt.city,
+        region: alt.regionName,
+        postal: alt.zip,
+        latitude: alt.lat,
+        longitude: alt.lon,
+        org: alt.isp,
+      };
+    }
+  }
+
+  return res.status(200).json({
+    ok: true,
+    ip,
+    country: geo.country_name || null,
+    city: geo.city || null,
+    region: geo.region || null,
+    postal: geo.postal || null,
+    latitude: geo.latitude || null,
+    longitude: geo.longitude || null,
+    isp: geo.org || null,
+  });
 }
