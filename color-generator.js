@@ -40,4 +40,4 @@ hexCodeDisplay.addEventListener('click', async () => {
 });
 
 // تحميل أول لون
-window.addEventListener('load', updateColorDisplay);
+window.addEventListener('load', () => updateColorDisplay());
