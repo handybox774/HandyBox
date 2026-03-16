@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UUID Generator - Free UUID v4 Tool | Handy Box</title>
+  <meta name="description" content="Generate random UUID v4 values instantly. Free online UUID generator with copy button and batch generation." />
+
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("darkMode");
+        var qp = new URL(window.location.href).searchParams.get("theme");
+        var isDark = theme === "enabled" || (theme === null && qp === "dark");
+        if (isDark) {
+          document.documentElement.classList.add("dark-mode");
+          document.addEventListener("DOMContentLoaded", function () {
+            document.body.classList.add("dark-mode");
+          });
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+  <link rel="stylesheet" href="style.css?v=16">
+  <script src="main-script.js?v=16" defer></script>
+
+  <style>
+    .uuid-container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .tool-section {
+      margin: 20px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+    }
+
+    body.dark-mode .tool-section {
+      background: #2c2c2c;
+      border-color: #444;
+    }
+
+    .tool-header {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    body.dark-mode .tool-header {
+      color: #f4f4f4;
+    }
+
+    .page-title {
+      text-align: center;
+      margin: 30px 0 10px;
+      color: #333;
+    }
+
+    body.dark-mode .page-title {
+      color: #f4f4f4;
+    }
+
+    .page-description {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #666;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    body.dark-mode .page-description {
+      color: #ccc;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin: 20px;
+      padding: 8px 16px;
+      background: #eee;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #333;
+    }
+
+    body.dark-mode .back-button {
+      background: #444;
+      color: #f4f4f4;
+      border-color: #666;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    body.dark-mode input,
+    body.dark-mode select,
+    body.dark-mode textarea {
+      background: #333;
+      color: #f4f4f4;
+      border-color: #555;
+    }
+
+    textarea {
+      min-height: 180px;
+      resize: vertical;
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .action-button {
+      padding: 12px 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color .3s;
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .action-button:hover {
+      background: #0056b3;
+    }
+
+    .secondary-button {
+      background: #6c757d;
+    }
+
+    .secondary-button:hover {
+      background: #545b62;
+    }
+
+    .result-box {
+      padding: 15px;
+      margin-top: 15px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      border: 1px solid #dee2e6;
+      font-weight: bold;
+      text-align: center;
+      line-height: 1.6;
+      word-break: break-word;
+      font-family: monospace;
+    }
+
+    body.dark-mode .result-box {
+      background: #333;
+      color: #f4f4f4;
+      border-color: #555;
+    }
+
+    .helper-note {
+      font-size: 13px;
+      opacity: .8;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 768px) {
+      .button-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="sidebar">
+    <ul>
+      <li class="dropdown-item">
+        <a href="#">Converters <span class="arrow">▼</span></a>
+        <ul class="dropdown-content">
+          <li><a href="image-converter.html">Image Converter</a></li>
+          <li><a href="pdf.html">PDF Merger</a></li>
+          <li><a href="converter-tools.html">Converter Tools</a></li>
+        </ul>
+      </li>
+
+      <li class="dropdown-item">
+        <a href="#">Generators <span class="arrow">▼</span></a>
+        <ul class="dropdown-content">
+          <li><a href="qrcode.html">QR Code Generator</a></li>
+          <li><a href="password.html">Password Generator</a></li>
+          <li><a href="color-generator.html">Color Generator</a></li>
+          <li><a href="uuid-generator.html">UUID Generator</a></li>
+        </ul>
+      </li>
+
+      <li class="dropdown-item">
+        <a href="#">Network <span class="arrow">▼</span></a>
+        <ul class="dropdown-content">
+          <li><a href="ip-address.html">What is my IP?</a></li>
+          <li><a href="user-agent.html">My User Agent</a></li>
+        </ul>
+      </li>
+
+      <li id="darkModeToggleMobile" class="dark-mode-mobile">
+        <a href="#" id="darkModeToggleInMenu" class="dark-mode-toggle-menu">
+          <span class="dark-mode-text">Dark Mode</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="logo"><h1>Handy Box</h1></a>
+      <button id="darkModeToggle" class="dark-mode-toggle">Dark Mode</button>
+      <div class="hamburger-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <a href="index.html" class="back-button">🔙 Back to Home</a>
+
+    <h2 class="page-title">🆔 UUID Generator</h2>
+    <p class="page-description">
+      Generate random UUID v4 values instantly. Create one UUID or generate multiple UUIDs at once for development, databases, APIs, and testing.
+    </p>
+
+    <div class="uuid-container">
+      <div class="tool-section">
+        <div class="tool-header">UUID v4 Generator</div>
+
+        <div class="input-group">
+          <label for="uuidCount">How many UUIDs do you want?</label>
+          <select id="uuidCount">
+            <option value="1">1 UUID</option>
+            <option value="5">5 UUIDs</option>
+            <option value="10">10 UUIDs</option>
+            <option value="20">20 UUIDs</option>
+            <option value="50">50 UUIDs</option>
+          </select>
+          <div class="helper-note">Tip: generate multiple UUIDs for bulk testing or mock data.</div>
+        </div>
+
+        <div class="button-row">
+          <button class="action-button" id="generateUuidBtn">Generate UUID</button>
+          <button class="action-button secondary-button" id="copyUuidBtn">Copy Result</button>
+          <button class="action-button secondary-button" id="clearUuidBtn">Clear</button>
+        </div>
+
+        <textarea id="uuidOutput" readonly placeholder="Your UUIDs will appear here..."></textarea>
+
+        <div class="result-box" id="uuidStatus">Ready to generate.</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Handy Box. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const uuidCount = document.getElementById("uuidCount");
+    const generateUuidBtn = document.getElementById("generateUuidBtn");
+    const copyUuidBtn = document.getElementById("copyUuidBtn");
+    const clearUuidBtn = document.getElementById("clearUuidBtn");
+    const uuidOutput = document.getElementById("uuidOutput");
+    const uuidStatus = document.getElementById("uuidStatus");
+
+    function generateUuidV4() {
+      if (window.crypto && crypto.randomUUID) {
+        return crypto.randomUUID();
+      }
+
+      // Fallback
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === "x" ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    function generateManyUuids() {
+      const count = Number(uuidCount.value);
+      const uuids = [];
+
+      for (let i = 0; i < count; i++) {
+        uuids.push(generateUuidV4());
+      }
+
+      uuidOutput.value = uuids.join("\n");
+      uuidStatus.textContent = `${count} UUID${count > 1 ? "s" : ""} generated successfully.`;
+    }
+
+    async function copyUuidResult() {
+      const text = uuidOutput.value.trim();
+
+      if (!text) {
+        uuidStatus.textContent = "Nothing to copy yet.";
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+        uuidStatus.textContent = "UUID result copied successfully.";
+      } catch {
+        uuidOutput.select();
+        document.execCommand("copy");
+        uuidStatus.textContent = "UUID result copied successfully.";
+      }
+    }
+
+    function clearUuidResult() {
+      uuidOutput.value = "";
+      uuidStatus.textContent = "Cleared.";
+    }
+
+    generateUuidBtn.addEventListener("click", generateManyUuids);
+    copyUuidBtn.addEventListener("click", copyUuidResult);
+    clearUuidBtn.addEventListener("click", clearUuidResult);
+
+    // Generate one UUID automatically on page load
+    window.addEventListener("load", () => {
+      generateManyUuids();
+    });
+  </script>
+</body>
+</html>
