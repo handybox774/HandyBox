@@ -80,21 +80,22 @@ export default async function handler(req, res) {
     const subject = tool ? `Handy Box Feedback (${tool})` : "Handy Box Feedback";
 
     await transporter.sendMail({
-      // MUST be a verified sender identity in SendGrid
-      from: `Handy Box <${FROM_EMAIL}>`,
-      to: TO_EMAIL,
-      replyTo: email || undefined,
-      subject,
-      text: [
-        "New feedback received:",
-        "",
-        `Message:\n${message}`,
-        "",
-        `From Email: ${email || "Not provided"}`,
-        `Tool: ${tool || "Not provided"}`,
-        `Page: ${page || "Not provided"}`,
-      ].join("\n"),
-    });
+  from: `Handy Box <${FROM_EMAIL}>`,
+  to: TO_EMAIL,
+  replyTo: email || undefined,
+  subject,
+
+  text: `New message from Handy Box:\n\n${message}`,
+
+  html: `
+    <h2>New message from Handy Box</h2>
+    <p><strong>Message:</strong></p>
+    <p>${message}</p>
+    <hr>
+    <p><strong>From:</strong> ${email || "Not provided"}</p>
+    <p><strong>Page:</strong> ${page || "Unknown"}</p>
+  `,
+});
 
     return res.status(200).json({ ok: true });
   } catch (err) {
