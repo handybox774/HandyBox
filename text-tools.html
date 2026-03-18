@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Text Tools – Word Counter, Case Converter & URL Encoder | Handy Box</title>
-  <meta name="description" content="Free text utilities: word counter, case converter, URL encoder and decoder, whitespace cleaner, line tools, and more—simple and fast." />
+  <title>Free Text Tools Online – Case Converter, URL Encoder, Word Counter | Handy Box</title>
+  <meta name="description" content="Free online text tools: convert case, encode URLs, clean text, remove spaces, reverse text, and more. Fast and easy to use.">
 
   <script>
   (function(){
@@ -344,6 +344,64 @@
     <button class="convert-button" onclick="decodeHtml()">Decode HTML</button>
   </div>
 </div>
+
+   <div class="tool-box">
+  <div class="tool-header">🧹 Remove Extra Spaces</div>
+
+  <div class="converter-row">
+    <div class="input-group">
+      <textarea id="spaceInput" placeholder="Paste your text..."></textarea>
+      <button class="copy-button" onclick="copyOutput('spaceInput')">📋 Copy Input</button>
+    </div>
+
+    <div class="output-group">
+      <textarea id="spaceOutput" placeholder="Clean result..." readonly></textarea>
+      <button class="copy-button" onclick="copyOutput('spaceOutput')">📋 Copy Output</button>
+    </div>
+  </div>
+
+  <div class="button-row">
+    <button class="convert-button" onclick="cleanSpaces()">Clean Text</button>
+  </div>
+</div>
+   <div class="tool-box">
+  <div class="tool-header">🔁 Reverse Text</div>
+
+  <div class="converter-row">
+    <div class="input-group">
+      <textarea id="reverseInput" placeholder="Enter text..."></textarea>
+      <button class="copy-button" onclick="copyOutput('reverseInput')">📋 Copy Input</button>
+    </div>
+
+    <div class="output-group">
+      <textarea id="reverseOutput" placeholder="Reversed text..." readonly></textarea>
+      <button class="copy-button" onclick="copyOutput('reverseOutput')">📋 Copy Output</button>
+    </div>
+  </div>
+
+  <div class="button-row">
+    <button class="convert-button" onclick="reverseText()">Reverse</button>
+  </div>
+</div>
+<div class="tool-box">
+  <div class="tool-header">📄 Remove Line Breaks</div>
+
+  <div class="converter-row">
+    <div class="input-group">
+      <textarea id="lineInput" placeholder="Paste text..."></textarea>
+      <button class="copy-button" onclick="copyOutput('lineInput')">📋 Copy Input</button>
+    </div>
+
+    <div class="output-group">
+      <textarea id="lineOutput" placeholder="Single line text..." readonly></textarea>
+      <button class="copy-button" onclick="copyOutput('lineOutput')">📋 Copy Output</button>
+    </div>
+  </div>
+
+  <div class="button-row">
+    <button class="convert-button" onclick="removeLineBreaks()">Convert</button>
+  </div>
+</div>
     </div>
   </main>
 
@@ -423,6 +481,27 @@ function decodeHtml() {
   const txt = document.createElement("textarea");
   txt.innerHTML = input;
   output.value = txt.value;
+}
+function cleanSpaces() {
+  const input = document.getElementById("spaceInput").value;
+  const output = document.getElementById("spaceOutput");
+
+
+  output.value = input
+    .replace(/\s+/g, " ")
+    .trim();
+}
+function reverseText() {
+  const input = document.getElementById("reverseInput").value;
+  const output = document.getElementById("reverseOutput");
+
+  output.value = input.split("").reverse().join("");
+}
+function removeLineBreaks() {
+  const input = document.getElementById("lineInput").value;
+  const output = document.getElementById("lineOutput");
+
+  output.value = input.replace(/\s*\n\s*/g, " ").trim();
 }
   </script>
 </body>
