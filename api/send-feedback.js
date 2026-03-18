@@ -79,21 +79,44 @@ export default async function handler(req, res) {
 
     const subject = tool ? `Handy Box Feedback (${tool})` : "Handy Box Feedback";
 
-    await transporter.sendMail({
+   await transporter.sendMail({
   from: `Handy Box <${FROM_EMAIL}>`,
   to: TO_EMAIL,
   replyTo: email || undefined,
-  subject,
+  subject: "You have a new message from HandyBox.tools",
 
-  text: `New message from Handy Box:\n\n${message}`,
+  text: `Hi,
+
+You received a new message from your website.
+
+Message:
+${message}
+
+From:
+${email || "Not provided"}
+
+Page:
+${page || "Unknown"}
+
+— HandyBox.tools`,
 
   html: `
-    <h2>New message from Handy Box</h2>
-    <p><strong>Message:</strong></p>
-    <p>${message}</p>
-    <hr>
-    <p><strong>From:</strong> ${email || "Not provided"}</p>
-    <p><strong>Page:</strong> ${page || "Unknown"}</p>
+    <div style="font-family: Arial; line-height:1.6;">
+      <h2 style="color:#333;">New message from HandyBox.tools</h2>
+      
+      <p><strong>Message:</strong></p>
+      <p>${message}</p>
+
+      <hr>
+
+      <p><strong>From:</strong> ${email || "Not provided"}</p>
+      <p><strong>Page:</strong> ${page || "Unknown"}</p>
+
+      <br>
+      <p style="font-size:12px;color:#888;">
+        This email was sent via HandyBox.tools
+      </p>
+    </div>
   `,
 });
 
