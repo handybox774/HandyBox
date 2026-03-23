@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- Home -->
   <url>
     <loc>https://handybox.tools/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://handybox.tools/about.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://handybox.tools/privacy-policy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
   </url>
 
   <!-- Converters -->
@@ -27,9 +36,24 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://handybox.tools/unit-converter.html</loc>
+    <loc>https://handybox.tools/unit-tools.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://handybox.tools/time-tools.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://handybox.tools/text-tools.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://handybox.tools/digital-tools.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 
   <!-- Generators -->
@@ -48,8 +72,13 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://handybox.tools/uuid-generator.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 
-  <!-- Network tools -->
+  <!-- Network -->
   <url>
     <loc>https://handybox.tools/ip-address.html</loc>
     <changefreq>weekly</changefreq>
@@ -61,17 +90,4 @@
     <priority>0.7</priority>
   </url>
 
-  <!-- Text / Digital tools (لو عندك الملفات بهالأسماء) -->
-  <url>
-    <loc>https://handybox.tools/text-tools.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://handybox.tools/digital-tools.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
 </urlset>
-
