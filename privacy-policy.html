@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy | Handy Box</title>
+  <meta name="description" content="Read the Privacy Policy for Handy Box and learn how information is handled across the website and its online tools." />
+
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("darkMode");
+        var qp = new URL(window.location.href).searchParams.get("theme");
+        var isDark = theme === "enabled" || (theme === null && qp === "dark");
+        if (isDark) {
+          document.documentElement.classList.add("dark-mode");
+          document.addEventListener("DOMContentLoaded", function () {
+            document.body.classList.add("dark-mode");
+          });
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png?v=2">
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png?v=2">
+  <link rel="stylesheet" href="style.css?v=16">
+  <script src="main-script.js?v=16" defer></script>
+
+  <style>
+    .content-page {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px 40px;
+      line-height: 1.8;
+    }
+
+    .content-page h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .content-page .lead {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 30px;
+      opacity: 0.9;
+    }
+
+    .content-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    body.dark-mode .content-card {
+      background: #2c2c2c;
+      border-color: #444;
+    }
+
+    .content-card h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin: 20px;
+      padding: 8px 16px;
+      background-color: #eee;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #333;
+    }
+
+    body.dark-mode .back-button {
+      background-color: #444;
+      color: #f4f4f4;
+      border-color: #666;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="sidebar">
+    <ul>
+      <li class="dropdown-item">
+        <a href="#">Converters <span class="arrow">▼</span></a>
+        <ul class="dropdown-content">
+          <li><a href="image-converter.html">Image Converter</a></li>
+          <li><a href="pdf.html">PDF Merger</a></li>
+          <li><a href="converter-tools.html">Converter Tools</a></li>
+        </ul>
+      </li>
+
+      <li class="dropdown-item">
+        <a href="#">Generators <span class="arrow">▼</span></a>
+        <ul class="dropdown-content">
+          <li><a href="qrcode.html">QR Code Generator</a></li>
+          <li><a href="password.html">Password Generator</a></li>
+          <li><a href="color-generator.html">Color Generator</a></li>
+          <li><a href="uuid-generator.html">UUID Generator</a></li>
+        </ul>
+      </li>
+
+      <li class="dropdown-item">
+        <a href="#">Network <span class="arrow">▼</span></a>
+        <ul class="dropdown-content">
+          <li><a href="ip-address.html">What is my IP?</a></li>
+          <li><a href="user-agent.html">My User Agent</a></li>
+        </ul>
+      </li>
+
+      <li id="darkModeToggleMobile" class="dark-mode-mobile">
+        <a href="#" id="darkModeToggleInMenu" class="dark-mode-toggle-menu">
+          <span class="dark-mode-text">Dark Mode</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="logo"><h1>Handy Box</h1></a>
+      <button id="darkModeToggle" class="dark-mode-toggle">Dark Mode</button>
+      <div class="hamburger-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <a href="index.html" class="back-button">🔙 Back to Home</a>
+
+    <section class="content-page">
+      <h2>Privacy Policy</h2>
+      <p class="lead">
+        This Privacy Policy explains how Handy Box handles information when you use the website and its tools.
+      </p>
+
+      <div class="content-card">
+        <h3>Information We Collect</h3>
+        <p>
+          Handy Box may process limited technical information required for tools to function properly. For example, some tools may use browser-provided or network-related information such as IP-related data or user agent details to display results.
+        </p>
+      </div>
+
+      <div class="content-card">
+        <h3>Tool Usage</h3>
+        <p>
+          Most tools on Handy Box are designed to work instantly in the browser without requiring registration. In some cases, temporary data may be processed only to provide the requested result.
+        </p>
+      </div>
+
+      <div class="content-card">
+        <h3>Feedback Form</h3>
+        <p>
+          If you use the feedback form, the information you submit, such as your email address and message, may be sent to Handy Box for support and communication purposes.
+        </p>
+      </div>
+
+      <div class="content-card">
+        <h3>Cookies and Analytics</h3>
+        <p>
+          Handy Box may use cookies or similar technologies to improve website functionality, understand usage patterns, and support services such as analytics or advertising.
+        </p>
+      </div>
+
+      <div class="content-card">
+        <h3>Third-Party Services</h3>
+        <p>
+          Some tools or features may rely on third-party services or APIs. These services may process limited information as needed to provide functionality.
+        </p>
+      </div>
+
+      <div class="content-card">
+        <h3>Advertising</h3>
+        <p>
+          Handy Box may display advertising from third-party providers. These providers may use cookies or similar technologies to serve and measure ads in accordance with their own policies.
+        </p>
+      </div>
+
+      <div class="content-card">
+        <h3>Data Security</h3>
+        <p>
+We take reasonable measures to protect your data and ensure a secure experience. While no system can guarantee complete security, we continuously work to improve and maintain the safety of our services.
+</p>
+      </div>
+
+      <div class="content-card">
+        <h3>Changes to This Policy</h3>
+        <p>
+          This Privacy Policy may be updated from time to time to reflect changes to the website, its tools, or legal requirements.
+        </p>
+      </div>
+
+      <div class="content-card">
+        <h3>Contact</h3>
+        <p>
+          If you have questions about this Privacy Policy, you may contact Handy Box through the website’s feedback form.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Handy Box. All rights reserved.</p>
+  </footer>
+</body>
+</html>
