@@ -377,3 +377,13 @@ body.dark-mode #feedbackEmail {
 body.dark-mode .ip-history-list li{
   border-bottom-color: rgba(255,255,255,0.15);
 }
+
+.footer-links a {
+  color: inherit;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
